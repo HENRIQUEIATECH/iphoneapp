@@ -13,21 +13,28 @@
 <body>
 
     <div id="msg-desktop" style="display:none;" class="aviso">
-        <img src="logo.png" class="logo">
+        <img src="logo.png" class="logo" alt="RBA">
         <h2>Acesso via Celular</h2>
         <p style="color: white;">Este aplicativo é exclusivo para dispositivos móveis.</p>
-        <p>Acesse pelo seu iPhone ou Android para ouvir a RBA.</p>
+        <p>Acesse pelo seu <strong>iPhone</strong> ou <strong>Android</strong> para ouvir a Rádio Brasil Artes.</p>
     </div>
 
     <script>
         (function() {
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const userAgent = navigator.userAgent;
+            const isIphone = /iPhone|iPad|iPod/i.test(userAgent);
+            const isAndroid = /Android/i.test(userAgent);
             
-            if (isMobile) {
-                // Se for celular, envia direto para o App Real
-                window.location.href = "https://iartium.com/iphoneapp/indexapp.html";
-            } else {
-                // Se for computador, mostra a mensagem de bloqueio
+            // 1. Se for iPhone, manda para a página do App para ver o tutorial
+            if (isIphone) {
+                window.location.href = "https://iartium.com/iphoneapp/indexapp.html"; 
+            } 
+            // 2. Se for Android, inicia o download do APK diretamente
+            else if (isAndroid) {
+                window.location.href = "https://iartium.com/RBA.apk";
+            } 
+            // 3. Se for computador, mostra a mensagem de bloqueio
+            else {
                 document.getElementById('msg-desktop').style.display = 'block';
             }
         })();
