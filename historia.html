@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
+        #lista { display: flex; flex-direction: column; width: 100%; }
+        .item { 
+            padding: 18px 15px; 
+            border-bottom: 1px solid rgba(8, 68, 36, 0.1); 
+            cursor: pointer; 
+            font-size: 17px; 
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .item::after { content: "▶"; font-size: 12px; opacity: 0.3; }
+        .item:active { background-color: rgba(8, 68, 36, 0.1); }
+        .item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+    </style>
+</head>
+<body>
+    <div id="lista">
+        <div class="item" onclick="selecionar(0)"><span>Projeto</span></div>
+        <div class="item" onclick="selecionar(1)"><span>Nossa História</span></div>
+    </div>
+
+<section class="section-rba" id="historia-completa" style="background-color: #f8f4dc; padding: 60px 20px; text-align: center;">
+    <div class="container-historia" style="max-width: 800px; margin: 0 auto;">
+        
+        <h2 style="color: #084424; font-size: 28px; margin-bottom: 10px; font-weight: bold;">Nossa História</h2>
+        <div style="width: 60px; height: 3px; background: #fcd404; margin: 0 auto 30px;"></div>
+
+        <div class="texto-historia" style="color: #084424; line-height: 1.8; font-size: 17px; text-align: justify;">
+            <p style="margin-bottom: 20px;">
+                A <strong>Rádio Brasil Artes (RBA)</strong> nasceu de um sonho profundo: o de preservar e ecoar a alma sonora do Brasil. Em um mundo cada vez mais acelerado, percebemos que as grandes obras da nossa música — do Sertanejo Raiz à sofisticação da Bossa Nova — precisavam de um refúgio, um lugar onde o tempo fizesse uma pausa para a arte se manifestar em sua forma mais pura.
+            </p>
+
+            <p style="margin-bottom: 20px;">
+                A iniciativa do empresário <strong>Paulo Salomão</strong> uniu a paixão pela curadoria musical com a visão de futuro. Não queríamos ser apenas mais uma estação de rádio; queríamos ser um patrimônio digital da cultura brasileira.
+            </p>
+
+            <blockquote style="border-left: 4px solid #fcd404; padding-left: 20px; font-style: italic; margin: 30px 0; color: #084424; font-weight: 500;">
+                "Nossa missão é entregar gratuitamente a excelência musical, unindo a tradição de grandes intérpretes com a facilidade do acesso moderno."
+            </blockquote>
+
+            <p style="margin-bottom: 20px;">
+                Para tornar esse acesso realidade no iPhone e em todos os dispositivos modernos, contamos com o suporte da tecnologia <strong>IArtium</strong>. Através de softwares inteligentes e uma arquitetura estável, conseguimos entregar áudio de alta fidelidade e uma interface que respeita o usuário, garantindo que a cultura brasileira chegue a qualquer lugar, a qualquer hora, com apenas um toque.
+            </p>
+
+            <p>
+                Hoje, a RBA é mais do que um aplicativo; é um movimento de resistência e celebração da beleza. Seja através de nossos Clássicos Musicais ou dos conteúdos informativos sobre Saúde e Bem-estar, estamos aqui para tocar o seu coração e elevar o seu espírito.
+            </p>
+        </div>
+
+        <div style="margin-top: 50px; display: flex; justify-content: center; gap: 40px; align-items: center; opacity: 0.8;">
+            <div style="text-align: center;">
+                <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Curadoria</p>
+                <p style="font-weight: bold; color: #084424;">Paulo Salomão</p>
+            </div>
+            <div style="width: 1px; height: 40px; background: #084424; opacity: 0.2;"></div>
+            <div style="text-align: center;">
+                <p style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Tecnologia</p>
+                <p style="font-weight: bold; color: #084424;">IArtium</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <script>
+        const tracks = [
+            { url: "https://ia600101.us.archive.org/18/items/iartium.com/R%C3%A1dio_Brasil_Artes_Une_Cultura_e_Inclus%C3%A3o.m4a", nome: "Projeto RBA" },
+            { url: "https://ia600208.us.archive.org/19/items/samba-bossa-viola-a-alma-sonora-do-brasil/Samba_Bossa_Viola__A_Alma_Sonora_do_Brasil.m4a", nome: "Nossa História" }
+        ];
+
+        let indiceAtual = 0;
+
+        function selecionar(index) {
+            indiceAtual = index;
+            enviarParaOApp();
+        }
+
+        function enviarParaOApp() {
+            const musica = tracks[indiceAtual];
+            if (window.parent) {
+                window.parent.postMessage({
+                    tipo: 'tocar',
+                    url: musica.url,
+                    nome: musica.nome
+                }, '*');
+            }
+        }
+
+        // Responde aos botões do App Principal
+        window.addEventListener('message', function(event) {
+            if (event.data === 'next') {
+                indiceAtual = (indiceAtual + 1) % tracks.length;
+                enviarParaOApp();
+            } else if (event.data === 'prev') {
+                indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
+                enviarParaOApp();
+            }
+        });
+    </script>
+</body>
+</html>

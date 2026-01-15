@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
+        #lista { display: flex; flex-direction: column; width: 100%; }
+        .item { 
+            padding: 18px 15px; 
+            border-bottom: 1px solid rgba(8, 68, 36, 0.1); 
+            cursor: pointer; 
+            font-size: 17px; 
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .item::after { content: "▶"; font-size: 12px; opacity: 0.3; }
+        .item:active { background-color: rgba(8, 68, 36, 0.1); }
+        .item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+    </style>
+</head>
+<body>
+    <div id="lista">
+        <div class="item" onclick="selecionar(0)"><span>Aurora Miranda</span></div>
+        <div class="item" onclick="selecionar(1)"><span>Orlando Silva</span></div>
+        <div class="item" onclick="selecionar(2)"><span>Vicente Celestino</span></div>
+    </div>
+
+    <script>
+        const tracks = [
+            { url: "https://www12.senado.leg.br/audio/dc6a6cdf-5a2a-49bf-a1bb-7a196b3c6c9f.mp3", nome: "Aurora Miranda" },
+            { url: "https://www12.senado.leg.br/audio/80b2c3c4-9a2c-4eb0-bc83-747f330743a8.mp3", nome: "Orlando Silva" },
+            { url: "https://www12.senado.leg.br/audio/af17a62a-5f49-4a2c-a1d8-e693f472e4e8.mp3", nome: "Vicente Celestino" }
+        ];
+
+        let indiceAtual = 0;
+
+        function selecionar(index) {
+            indiceAtual = index;
+            enviarParaOApp();
+        }
+
+        function enviarParaOApp() {
+            const musica = tracks[indiceAtual];
+            if (window.parent) {
+                window.parent.postMessage({
+                    tipo: 'tocar',
+                    url: musica.url,
+                    nome: musica.nome
+                }, '*');
+            }
+        }
+
+        // Responde aos botões do App Principal
+        window.addEventListener('message', function(event) {
+            if (event.data === 'next') {
+                indiceAtual = (indiceAtual + 1) % tracks.length;
+                enviarParaOApp();
+            } else if (event.data === 'prev') {
+                indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
+                enviarParaOApp();
+            }
+        });
+    </script>
+</body>
+</html>

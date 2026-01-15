@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <style>
+        body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
+        #lista { display: flex; flex-direction: column; width: 100%; }
+        .item { 
+            padding: 18px 15px; 
+            border-bottom: 1px solid rgba(8, 68, 36, 0.1); 
+            cursor: pointer; 
+            font-size: 17px; 
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .item::after { content: "▶"; font-size: 12px; opacity: 0.3; }
+        .item:active { background-color: rgba(8, 68, 36, 0.1); }
+        .item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+    </style>
+</head>
+<body>
+    <div id="lista">
+        <div class="item" onclick="selecionar(0)"><span>A Voz do Brasil 14/01/2026 21 horas</span></div>
+        <div class="item" onclick="selecionar(1)"><span>A Voz do Brasil 15/01/2026 21 horas</span></div>
+        <div class="item" onclick="selecionar(2)"><span>A Voz do Brasil 16/01/2026 21 horas</span></div>
+        <div class="item" onclick="selecionar(2)"><span>A Voz do Brasil 19/01/2026 21 horas</span></div>
+    </div>
+
+    <script>
+        const tracks = [
+            { url: "https://audios.ebc.com.br/radiogov/2026/01/14-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 14/01/2026" },
+            { url: "https://audios.ebc.com.br/radiogov/2026/01/15-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 15/01/2026" },
+            { url: "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/01/2026" },
+            { url: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/01/2026" }
+        ];
+
+        let indiceAtual = 0;
+
+        function selecionar(index) {
+            indiceAtual = index;
+            enviarParaOApp();
+        }
+
+        function enviarParaOApp() {
+            const musica = tracks[indiceAtual];
+            if (window.parent) {
+                window.parent.postMessage({
+                    tipo: 'tocar',
+                    url: musica.url,
+                    nome: musica.nome
+                }, '*');
+            }
+        }
+
+        // Responde aos botões do App Principal
+        window.addEventListener('message', function(event) {
+            if (event.data === 'next') {
+                indiceAtual = (indiceAtual + 1) % tracks.length;
+                enviarParaOApp();
+            } else if (event.data === 'prev') {
+                indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
+                enviarParaOApp();
+            }
+        });
+    </script>
+</body>
+</html>
