@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBA - Offline</title>
+    <style>
+        body { 
+            background-color: #084424; 
+            color: #fcd404; 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+            text-align: center; 
+        }
+        .logo { width: 100px; opacity: 0.5; margin-bottom: 20px; }
+        .aviso { padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="aviso">
+        <img src="logo.png" class="logo">
+        <h2>Você está sem internet</h2>
+        <p style="color: white;">A Rádio Brasil Artes precisa de conexão para tocar as músicas.</p>
+        <p>Verifique seu Wi-Fi ou Dados Móveis.</p>
+        <button onclick="window.location.reload()" style="background:#fcd404; border:none; padding:10px 20px; border-radius:5px; font-weight:bold; cursor:pointer;">TENTAR NOVAMENTE</button>
+    </div>
+</body>
+</html>
