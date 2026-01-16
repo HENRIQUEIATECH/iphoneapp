@@ -6,54 +6,88 @@
     <style>
         body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
         #lista { display: flex; flex-direction: column; width: 100%; }
+        
         .item { 
-            padding: 18px 15px; 
-            border-bottom: 1px solid rgba(8, 68, 36, 0.1); 
+            padding: 16px 15px; 
+            border-bottom: 1px solid rgba(8, 68, 36, 0.08); 
             cursor: pointer; 
-            font-size: 17px; 
-            font-weight: 500;
+            font-size: 16px; 
+            font-weight: 400;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: all 0.2s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        .item::after { content: "▶"; font-size: 12px; opacity: 0.3; }
+
+        /* Estilo para a música que está tocando */
+        .item.active { 
+            background-color: rgba(8, 68, 36, 0.05); 
+            font-weight: 700;
+            color: #084424;
+            border-left: 4px solid #084424;
+        }
+
+        .item::after { content: "▶"; font-size: 10px; opacity: 0.3; margin-left: 10px; }
+        .item.active::after { content: "🔊"; opacity: 1; font-size: 12px; }
+        
         .item:active { background-color: rgba(8, 68, 36, 0.1); }
-        .item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+        
+        .item span { 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            flex: 1;
+        }
     </style>
 </head>
-<body>
+<body> 
     <div id="lista">
-        <div class="item" onclick="selecionar(0)"><span>Saúde Mental</span></div>
-        <div class="item" onclick="selecionar(1)"><span>Ansiedade</span></div>
-        <div class="item" onclick="selecionar(2)"><span>Comportamento</span></div>
-        <div class="item" onclick="selecionar(3)"><span>Aposentadoria INSS</span></div>
-        <div class="item" onclick="selecionar(4)"><span>Ondas de Calor</span></div>
-        <div class="item" onclick="selecionar(5)"><span>Embrapa tem papel essencial</span></div>
-        <div class="item" onclick="selecionar(6)"><span>Hidrogênio Verde</span></div>
-        <div class="item" onclick="selecionar(7)"><span>No Brasil Império</span></div>
-        <div class="item" onclick="selecionar(8)"><span>Riscos do cigarro eletrônico</span></div>
-    </div>
+        </div>
 
     <script>
         const tracks = [
-            { url: "https://traffic.megaphone.fm/GLT3446402672.mp3", nome: "Dra Alana" },
-            { url: "https://traffic.megaphone.fm/GLT5670835570.mp3", nome: "Dra Alana" },
-            { url: "https://traffic.megaphone.fm/GLT2505292577.mp3", nome: "Dra Alana" },
-            { url: "https://ia601300.us.archive.org/33/items/sarah_202601/sarah.mp3", nome: "Dra Sarah Amélia" },
-            { url: "https://www12.senado.leg.br/audio/dae61be5-c889-474a-8386-1cdbd5d40d7e.mp3", nome: "Cuidados com a Saúde" },
-            { url: "https://www12.senado.leg.br/audio/3803195b-d8cb-487c-bf30-eb2d2de8b3f1.mp3", nome: "na produção sustentável de alimentos" },
+            { url: "https://traffic.megaphone.fm/GLT3446402672.mp3", nome: "Dra Alana - Saúde Mental" },
+            { url: "https://traffic.megaphone.fm/GLT5670835570.mp3", nome: "Dra Alana - Ansiedade" },
+            { url: "https://traffic.megaphone.fm/GLT2505292577.mp3", nome: "Dra Alana - Comportamento" },
+            { url: "https://ia601300.us.archive.org/33/items/sarah_202601/sarah.mp3", nome: "Dra Sarah Amélia - Aposentadoria INSS" },
+            { url: "https://www12.senado.leg.br/audio/dae61be5-c889-474a-8386-1cdbd5d40d7e.mp3", nome: "Cuidados com a Saúde - Ondas de Calor" },
+            { url: "https://www12.senado.leg.br/audio/3803195b-d8cb-487c-bf30-eb2d2de8b3f1.mp3", nome: "Embrapa tem papel essencial na produção sustentável de alimentos" },
             { url: "https://www12.senado.leg.br/audio/8b09c4c0-696e-4e96-84b8-7a049b8b6d41.mp3", nome: "Brasil como potência do hidrogênio verde" },
-            { url: "https://www12.senado.leg.br/audio/638b5cb5-26ba-4abe-8b51-1372aa87a1a7.mp3", nome: "planos para substituir escravos negros por chineses" },
+            { url: "https://www12.senado.leg.br/audio/638b5cb5-26ba-4abe-8b51-1372aa87a1a7.mp3", nome: "No Brasil Império e planos para substituir escravos negros por chineses" },
             { url: "https://audios.ebc.com.br/radiogov/2025/07/15-07-2025-papo-sau-de-prev-quedas.mp3", nome: "Evitar Acidentes" },
             { url: "https://audios.ebc.com.br/radiogov/2024/06/06-06-24-podcast-papo-saude-episodio-dia-mundial-do-tabaco-1-21m09s.mp3", nome: "Riscos do cigarro eletrônico" }
         ];
 
         let indiceAtual = 0;
 
+        // Renderiza a lista automaticamente
+        const listaDiv = document.getElementById('lista');
+        tracks.forEach((track, i) => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.id = 'track-' + i;
+            div.onclick = () => selecionar(i);
+            div.innerHTML = `<span>${track.nome}</span>`;
+            listaDiv.appendChild(div);
+        });
+
         function selecionar(index) {
             indiceAtual = index;
+            atualizarInterface();
             enviarParaOApp();
+        }
+
+        function atualizarInterface() {
+            // Remove a classe active de todos
+            document.querySelectorAll('.item').forEach(el => el.classList.remove('active'));
+            // Adiciona na música atual
+            const elementoAtivo = document.getElementById('track-' + indiceAtual);
+            if (elementoAtivo) {
+                elementoAtivo.classList.add('active');
+                // Faz a lista rolar automaticamente para a música se ela estiver fora da visão
+                elementoAtivo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
 
         function enviarParaOApp() {
@@ -71,14 +105,17 @@
         window.addEventListener('message', function(event) {
             if (event.data === 'next') {
                 indiceAtual = (indiceAtual + 1) % tracks.length;
-                enviarParaOApp();
+                selecionar(indiceAtual);
             } else if (event.data === 'prev') {
                 indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
-                enviarParaOApp();
+                selecionar(indiceAtual);
             }
         });
+
+        // Inicia a primeira música visualmente
+        atualizarInterface();
     </script>
-    <script>
+        <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js');
     }
