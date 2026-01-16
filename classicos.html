@@ -6,45 +6,83 @@
     <style>
         body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
         #lista { display: flex; flex-direction: column; width: 100%; }
+        
         .item { 
-            padding: 18px 15px; 
-            border-bottom: 1px solid rgba(8, 68, 36, 0.1); 
+            padding: 16px 15px; 
+            border-bottom: 1px solid rgba(8, 68, 36, 0.08); 
             cursor: pointer; 
-            font-size: 17px; 
-            font-weight: 500;
+            font-size: 16px; 
+            font-weight: 400;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: all 0.2s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        .item::after { content: "▶"; font-size: 12px; opacity: 0.3; }
+
+        /* Estilo para a música que está tocando */
+        .item.active { 
+            background-color: rgba(8, 68, 36, 0.05); 
+            font-weight: 700;
+            color: #084424;
+            border-left: 4px solid #084424;
+        }
+
+        .item::after { content: "▶"; font-size: 10px; opacity: 0.3; margin-left: 10px; }
+        .item.active::after { content: "🔊"; opacity: 1; font-size: 12px; }
+        
         .item:active { background-color: rgba(8, 68, 36, 0.1); }
-        .item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+        
+        .item span { 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            flex: 1;
+        }
     </style>
 </head>
-<body>
+<body> 
     <div id="lista">
-        <div class="item" onclick="selecionar(0)"><span>Francisco Alves</span></div>
-        <div class="item" onclick="selecionar(1)"><span>Orlando Silva</span></div>
-        <div class="item" onclick="selecionar(2)"><span>Vicente Celessstino</span></div>
-        <div class="item" onclick="selecionar(3)"><span>Mário Reis</span></div>
-        <div class="item" onclick="selecionar(4)"><span>Carlos Galhardo</span></div>
-    </div>
+        </div>
 
     <script>
         const tracks = [
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/01%20-%20Francisco%20Alves%20-%20Boa%20Noite%2C%20Amor.mp3", nome: "Boa Noite, Amor" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/04%20-%20Orlando%20Silva%20-%20Errei%2C%20Erramos.mp3", nome: "Errei, Erramos" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/07%20-%20Vicente%20Celestino%20-%20Linda%20Flor%20%28Ai%2C%20Y%C3%B4%20Y%C3%B4%29.mp3", nome: "Linda Flor (Ai, Yô Yô)" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/02%20-%20M%C3%A1rio%20Reis%20-%20Jura.mp3", nome: "Jura" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/06%20-%20Carlos%20Galhardo%20-%20Fascina%C3%A7%C3%A3o.mp3", nome: "Fascinação" }
+            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/01%20-%20Francisco%20Alves%20-%20Boa%20Noite%2C%20Amor.mp3", nome: "Francisco Alves - Boa Noite, Amor" },
+            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/04%20-%20Orlando%20Silva%20-%20Errei%2C%20Erramos.mp3", nome: "Orlando Silva - Errei, Erramos" },
+            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/07%20-%20Vicente%20Celestino%20-%20Linda%20Flor%20%28Ai%2C%20Y%C3%B4%20Y%C3%B4%29.mp3", nome: "Linda Flor (Vicente Celestino - Ai, Yô Yô)" },
+            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/02%20-%20M%C3%A1rio%20Reis%20-%20Jura.mp3", nome: "Mário Reis - Jura" },
+            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/06%20-%20Carlos%20Galhardo%20-%20Fascina%C3%A7%C3%A3o.mp3", nome: "Carlos Galhardo - Fascinação" }
         ];
 
         let indiceAtual = 0;
 
+        // Renderiza a lista automaticamente
+        const listaDiv = document.getElementById('lista');
+        tracks.forEach((track, i) => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.id = 'track-' + i;
+            div.onclick = () => selecionar(i);
+            div.innerHTML = `<span>${track.nome}</span>`;
+            listaDiv.appendChild(div);
+        });
+
         function selecionar(index) {
             indiceAtual = index;
+            atualizarInterface();
             enviarParaOApp();
+        }
+
+        function atualizarInterface() {
+            // Remove a classe active de todos
+            document.querySelectorAll('.item').forEach(el => el.classList.remove('active'));
+            // Adiciona na música atual
+            const elementoAtivo = document.getElementById('track-' + indiceAtual);
+            if (elementoAtivo) {
+                elementoAtivo.classList.add('active');
+                // Faz a lista rolar automaticamente para a música se ela estiver fora da visão
+                elementoAtivo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
 
         function enviarParaOApp() {
@@ -62,14 +100,17 @@
         window.addEventListener('message', function(event) {
             if (event.data === 'next') {
                 indiceAtual = (indiceAtual + 1) % tracks.length;
-                enviarParaOApp();
+                selecionar(indiceAtual);
             } else if (event.data === 'prev') {
                 indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
-                enviarParaOApp();
+                selecionar(indiceAtual);
             }
         });
+
+        // Inicia a primeira música visualmente
+        atualizarInterface();
     </script>
-    <script>
+        <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js');
     }
