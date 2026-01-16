@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rba-v1';
+const CACHE_NAME = 'rba-v2';
 const OFFLINE_URL = 'offline.html';
 
 // Instala e guarda a página offline no cache do celular
