@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -126,5 +125,11 @@
         // Passagem automática
         audio.onended = next;
     </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("Proteção Offline Ativada!"));
+    }
+</script>
 </body>
 </html>
