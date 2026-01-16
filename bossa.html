@@ -6,259 +6,189 @@
     <style>
         body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
         #lista { display: flex; flex-direction: column; width: 100%; }
+        
         .item { 
-            padding: 18px 15px; 
-            border-bottom: 1px solid rgba(8, 68, 36, 0.1); 
+            padding: 16px 15px; 
+            border-bottom: 1px solid rgba(8, 68, 36, 0.08); 
             cursor: pointer; 
-            font-size: 17px; 
-            font-weight: 500;
+            font-size: 16px; 
+            font-weight: 400;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            transition: all 0.2s ease;
             -webkit-tap-highlight-color: transparent;
         }
-        .item::after { content: "▶"; font-size: 12px; opacity: 0.3; }
+
+        /* Estilo para a música que está tocando */
+        .item.active { 
+            background-color: rgba(8, 68, 36, 0.05); 
+            font-weight: 700;
+            color: #084424;
+            border-left: 4px solid #084424;
+        }
+
+        .item::after { content: "▶"; font-size: 10px; opacity: 0.3; margin-left: 10px; }
+        .item.active::after { content: "🔊"; opacity: 1; font-size: 12px; }
+        
         .item:active { background-color: rgba(8, 68, 36, 0.1); }
-        .item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
+        
+        .item span { 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            flex: 1;
+        }
     </style>
 </head>
-<body>
+<body> 
     <div id="lista">
-        <div class="item" onclick="selecionar(0)"><span>Elis Regina</span></div>
-        <div class="item" onclick="selecionar(1)"><span>Elis Regina e Tom Jobim 1</span></div>
-        <div class="item" onclick="selecionar(2)"><span>Elis Regina e Tom Jobim 2</span></div>
-        <div class="item" onclick="selecionar(3)"><span>Elis Regina e Tom Jobim 3</span></div>
-        <div class="item" onclick="selecionar(4)"><span>Elis Regina e Tom Jobim 4</span></div>
-        <div class="item" onclick="selecionar(5)"><span>Elis Regina e Tom Jobim 5</span></div>
-        <div class="item" onclick="selecionar(6)"><span>Elis Regina e Tom Jobim 6</span></div>
-        <div class="item" onclick="selecionar(7)"><span>Elis Regina e Tom Jobim 7</span></div>
-        <div class="item" onclick="selecionar(8)"><span>Elis Regina e Tom Jobim 8</span></div>        
-        <div class="item" onclick="selecionar(9)"><span>Tom Jobim 1</span></div>
-        <div class="item" onclick="selecionar(10)"><span>Tom Jobim 21</span></div>
-        <div class="item" onclick="selecionar(11)"><span>Tom Jobim 3</span></div>
-        <div class="item" onclick="selecionar(12)"><span>Tom Jobim 4</span></div>
-        <div class="item" onclick="selecionar(13)"><span>Tom Jobim 5</span></div>
-        <div class="item" onclick="selecionar(14)"><span>Tom Jobim 6</span></div>
-        <div class="item" onclick="selecionar(15)"><span>Tom Jobim 7</span></div>
-        <div class="item" onclick="selecionar(16)"><span>Tom Jobim 8</span></div>
-        <div class="item" onclick="selecionar(17)"><span>Tom Jobim 9</span></div>
-        <div class="item" onclick="selecionar(18)"><span>Tom Jobim 10</span></div>
-        <div class="item" onclick="selecionar(19)"><span>Tom Jobim 11</span></div>
-        <div class="item" onclick="selecionar(20)"><span>Tom Jobim 12</span></div>
-        <div class="item" onclick="selecionar(21)"><span>Tom Jobim 13</span></div>
-        <div class="item" onclick="selecionar(22)"><span>Tom Jobim 14</span></div>
-        <div class="item" onclick="selecionar(23)"><span>Tom Jobim 15</span></div>
-        <div class="item" onclick="selecionar(24)"><span>Tom Jobim 16</span></div>
-        <div class="item" onclick="selecionar(25)"><span>Tom Jobim 17</span></div>
-        <div class="item" onclick="selecionar(26)"><span>Tom Jobim 18</span></div>
-        <div class="item" onclick="selecionar(27)"><span>Tom Jobim 19</span></div>
-        <div class="item" onclick="selecionar(28)"><span>Tom Jobim 20</span></div>
-        <div class="item" onclick="selecionar(29)"><span>Tom Jobim 21</span></div>
-        <div class="item" onclick="selecionar(30)"><span>Tom Jobim 22</span></div>
-        <div class="item" onclick="selecionar(31)"><span>Tom Jobim 23</span></div>
-        <div class="item" onclick="selecionar(32)"><span>Tom Jobim 24</span></div>
-        <div class="item" onclick="selecionar(33)"><span>Tom Jobim 25</span></div>
-        <div class="item" onclick="selecionar(34)"><span>Tom Jobim 26</span></div>
-        <div class="item" onclick="selecionar(35)"><span>Tom Jobim 27</span></div>
-        <div class="item" onclick="selecionar(36)"><span>Tom Jobim 28</span></div>
-        <div class="item" onclick="selecionar(37)"><span>Tom Jobim 29</span></div>
-        <div class="item" onclick="selecionar(38)"><span>Tom Jobim 30</span></div>
-        <div class="item" onclick="selecionar(39)"><span>Tom Jobim 31</span></div>
-        <div class="item" onclick="selecionar(40)"><span>Tom Jobim 32</span></div>
-        <div class="item" onclick="selecionar(41)"><span>Tom Jobim 33</span></div>
-        <div class="item" onclick="selecionar(42)"><span>Tom Jobim 34</span></div>
-        <div class="item" onclick="selecionar(43)"><span>Frank Sinatra</span></div>        
-        <div class="item" onclick="selecionar(44)"><span>João Gilberto 1</span></div>
-        <div class="item" onclick="selecionar(45)"><span>João Gilberto 2</span></div>
-        <div class="item" onclick="selecionar(46)"><span>João Gilberto 3</span></div>
-        <div class="item" onclick="selecionar(47)"><span>João Gilberto 4</span></div>
-        <div class="item" onclick="selecionar(48)"><span>João Gilberto 5</span></div>
-        <div class="item" onclick="selecionar(49)"><span>João Gilberto 6</span></div>
-        <div class="item" onclick="selecionar(50)"><span>João Gilberto 7</span></div>
-        <div class="item" onclick="selecionar(51)"><span>João Gilberto 8</span></div>
-        <div class="item" onclick="selecionar(52)"><span>João Gilberto 9</span></div>
-        <div class="item" onclick="selecionar(53)"><span>João Gilberto 10</span></div>
-        <div class="item" onclick="selecionar(54)"><span>João Gilberto 11</span></div>
-        <div class="item" onclick="selecionar(55)"><span>Chico Buarque 1</span></div>
-        <div class="item" onclick="selecionar(56)"><span>Chico Buarque 2</span></div>
-        <div class="item" onclick="selecionar(57)"><span>Chico Buarque 3</span></div>
-        <div class="item" onclick="selecionar(58)"><span>Chico Buarque 4</span></div>
-        <div class="item" onclick="selecionar(59)"><span>Chico Buarque 5</span></div>
-        <div class="item" onclick="selecionar(60)"><span>Chico Buarque 6</span></div>
-        <div class="item" onclick="selecionar(61)"><span>Chico Buarque 7</span></div>
-        <div class="item" onclick="selecionar(62)"><span>Chico Buarque 8</span></div>
-        <div class="item" onclick="selecionar(63)"><span>Chico Buarque 9</span></div>
-        <div class="item" onclick="selecionar(64)"><span>Chico Buarque 10</span></div>
-        <div class="item" onclick="selecionar(65)"><span>Milton Nascimento</span></div>
-        <div class="item" onclick="selecionar(66)"><span>Zé Ramalho 1</span></div>
-        <div class="item" onclick="selecionar(67)"><span>Zé Ramalho 2</span></div>
-        <div class="item" onclick="selecionar(68)"><span>Zé Ramalho 3</span></div>
-        <div class="item" onclick="selecionar(69)"><span>Zé Ramalho 4</span></div>
-        <div class="item" onclick="selecionar(70)"><span>Zé Ramalho 5</span></div>
-        <div class="item" onclick="selecionar(71)"><span>Zé Ramalho 6</span></div>
-        <div class="item" onclick="selecionar(72)"><span>Zé Ramalho 7</span></div>
-        <div class="item" onclick="selecionar(73)"><span>Zé Ramalho 8</span></div>
-        <div class="item" onclick="selecionar(74)"><span>Caetano Veloso 1</span></div>
-        <div class="item" onclick="selecionar(75)"><span>Caetano Veloso 2</span></div>
-        <div class="item" onclick="selecionar(76)"><span>Caetano Veloso 3</span></div>
-        <div class="item" onclick="selecionar(77)"><span>Caetano Veloso 4</span></div>
-        <div class="item" onclick="selecionar(78)"><span>Caetano Veloso 5</span></div>
-        <div class="item" onclick="selecionar(79)"><span>Caetano Veloso 6</span></div>
-        <div class="item" onclick="selecionar(80)"><span>Caetano Veloso 7</span></div>
-        <div class="item" onclick="selecionar(80)"><span>Caetano Veloso 8</span></div>
-        <div class="item" onclick="selecionar(81)"><span>Caetano Veloso 9</span></div>
-        <div class="item" onclick="selecionar(82)"><span>Caetano Veloso 10</span></div>
-        <div class="item" onclick="selecionar(83)"><span>Caetano Veloso 11</span></div>
-        <div class="item" onclick="selecionar(84)"><span>Caetano Veloso 12</span></div>
-        <div class="item" onclick="selecionar(85)"><span>Caetano Veloso 13</span></div>
-        <div class="item" onclick="selecionar(86)"><span>Gal Costa 2</span></div>
-        <div class="item" onclick="selecionar(87)"><span>Gal Costa 3</span></div>
-        <div class="item" onclick="selecionar(88)"><span>Gal Costa 4</span></div>
-        <div class="item" onclick="selecionar(89)"><span>Gal Costa 5</span></div>
-        <div class="item" onclick="selecionar(90)"><span>Gal Costa 6</span></div>
-        <div class="item" onclick="selecionar(91)"><span>Gal Costa 7</span></div>
-        <div class="item" onclick="selecionar(92)"><span>Gal Costa 8</span></div>
-        <div class="item" onclick="selecionar(93)"><span>Gal Costa 9</span></div>
-        <div class="item" onclick="selecionar(94)"><span>Gal Costa 10</span></div>
-        <div class="item" onclick="selecionar(95)"><span>Gal Costa 11</span></div>
-        <div class="item" onclick="selecionar(96)"><span>Gal Costa 12</span></div>
-        <div class="item" onclick="selecionar(96)"><span>Gal Costa 13</span></div>
-        <div class="item" onclick="selecionar(97)"><span>Jorge Ben 1</span></div>
-        <div class="item" onclick="selecionar(98)"><span>Jorge Ben 2</span></div>
-        <div class="item" onclick="selecionar(99)"><span>Jorge Ben 3</span></div>
-        <div class="item" onclick="selecionar(100)"><span>Jorge Ben 4</span></div>
-        <div class="item" onclick="selecionar(101)"><span>Jorge Ben 5</span></div>
-        <div class="item" onclick="selecionar(102)"><span>Jorge Ben 6</span></div>
-        <div class="item" onclick="selecionar(103)"><span>Jorge Ben 7</span></div>
-        <div class="item" onclick="selecionar(104)"><span>Jorge Ben 8</span></div>
-        <div class="item" onclick="selecionar(105)"><span>Jorge Ben 9</span></div>
-        <div class="item" onclick="selecionar(106)"><span>Jorge Ben 10</span></div>
-        <div class="item" onclick="selecionar(107)"><span>Jorge Ben 11</span></div>
-        <div class="item" onclick="selecionar(108)"><span>Jorge Ben 12</span></div>
-        <div class="item" onclick="selecionar(108)"><span>Jorge Ben 13</span></div>
-        <div class="item" onclick="selecionar(109)"><span>João Bosco</span></div>
-    </div>
+        </div>
 
     <script>
         const tracks = [
-            { url: "https://ia601409.us.archive.org/35/items/ElisComoNossosPais/Elis_ComoNossosPais.mp3", nome: "Como Nossos Pais" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12793/Retratoembrancoepreto.mp3", nome: "Elis Regina e Tom Jobim" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12798/Aguasdemarco.mp3", nome: "Aguas de março" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12790/Poise.mp3", nome: "Pois é" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12797/Modinha.mp3", nome: "Modinha" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12787/Triste.mp3", nome: "Triste" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12796/Corcovado.mp3", nome: "Corcovado" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12788/Oquetinhadeser.mp3", nome: "O que tinha de ser" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12793/Retratoembrancoepreto.mp3", nome: "Retrato em branco e preto" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12383/The%20Girl%20From%20Ipanema.mp3", nome: "The girl from Ipanema" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14586/05hinoaosol.mp3", nome: "Hino Ao Sol" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14587/06descendoomorro.mp3", nome: "Descendo o Morro" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14588/04osambadeamanha.mp3", nome: "O samba de amanhã" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14589/03noitesdorio.mp3", nome: "Noites do Rio" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14590/02arpoador.mp3", nome: "Arpoador" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12099/Shesacarioca.mp3", nome: "Ela é carioca" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12100/Aguadebeber.mp3", nome: "Agua de beber" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12101/Surfboard.mp3", nome: "Surfboard" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12102/Uselesslandscape.mp3", nome: "Inútil paisagem" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12889/Boto.mp3", nome: "Bôto" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13412/Wave.mp3", nome: "Wave" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13413/Chegadesaudade.mp3", nome: "Chega de saudade" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13415/Sambadoaviao.mp3", nome: "Samba do avião" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13416/GarotadeIpanema.mp3", nome: "Garota de Ipanema" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13423/Modinhaseresta.mp3", nome: "Modinha Seresta n° 5" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13422/Modinha.mp3", nome: "Modinha" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13425/Cantacantamais.mp3", nome: "Canta, canta mais" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13426/Eunaoexistosemvoce.mp3", nome: "Eu não existo sem você" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13427/Porcausadevoce.mp3", nome: "Por causa de você" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13428/Sucedeuassim.mp3", nome: "Sucedeu assim" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13429/Imagina.mp3", nome: "Imagina" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13426/Eunaoexistosemvoce.mp3", nome: "Eu não existo sem você" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13430/Euseiquevouteamar.mp3", nome: "Eu sei que vou te amar" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13431/Cancaoamordemais.mp3", nome: "Canção do amor demais" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13434/18%20Derradeira%20Primavera.mp3", nome: "Derradeira primavera" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13168/Someonetolightup.mp3", nome: "Se todos fossem iguais a você" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13161/Offkey.mp3", nome: "Desafinado" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13154/Dreamer.mp3", nome: "Vivo sonhando" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13156/OlhaMaria.mp3", nome: "Olha Maria" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13157/Onenotesamba.mp3", nome: "Samba de uma nota só" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13160/Marina.mp3", nome: "Marina del Rey" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13165/Chovendoroseira.mp3", nome: "Na Roseira" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13172/SongoftheSabia.mp3", nome: "Sabiá" },
-            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12383/The%20Girl%20From%20Ipanema.mp3", nome: "The Girl From Ipanema" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/01%20Chega%20de%20saudade.mp3", nome: "Chega de saudade" },
-            { url: "https://ia801904.us.archive.org/33/items/joao-gilberto-chega-de-saudade/02%20Lobo%20bobo.mp3", nome: "Lobo bobo João" },
-            { url: "https://ia801904.us.archive.org/33/items/joao-gilberto-chega-de-saudade/03%20Brigas%2C%20nunca%20mais.mp3", nome: "Brigas, nunca mais" },
-            { url: "https://ia801904.us.archive.org/33/items/joao-gilberto-chega-de-saudade/05%20Saudade%20fez%20um%20samba.mp3", nome: "Saudade fez um samba" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/06%20Maria%20Ningu%C3%A9m.mp3", nome: "Maria Ninguém" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/07%20Desafinado.mp3", nome: "Desafinado" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/08%20Rosa%20morena.mp3", nome: "Rosa morena" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/09%20Morena%20boca%20de%20ouro.mp3", nome: "Morena boca de ouro" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/10%20Bim%20bom.mp3", nome: "Bim bom" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/11%20Aos%20p%C3%A9s%20da%20cruz.mp3", nome: "Aos pés da cruz" },
-            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/12%20%C3%89%20luxo%20s%C3%B3.mp3", nome: "É luxo só" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/01%20-%20Deus%20lhe%20pague.mp3", nome: "Deus lhe pague" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/02%20-%20Cotidiano.mp3", nome: "Cotidiano" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/03%20-%20Desalento.mp3", nome: "Desalento" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/04%20-%20Constru%C3%A7ao.mp3", nome: "Construção" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/05%20-%20Cordao.mp3", nome: "Cordão" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/06%20-%20Olha%20Maria.mp3", nome: "Olha Maria" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/07%20-%20Samba%20de%20Orly.mp3", nome: "Samba de Orly" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/08%20-%20Valsinha.mp3", nome: "Valsinha" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/09%20-%20Minha%20historia%20%28Ges%C3%B9bambino%29.mp3", nome: "Minha história Gesùbambino" },
-            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/10%20-%20Acalanto.mp3", nome: "Acalanto" },
-            { url: "https://dn720303.ca.archive.org/0/items/Milton-Nascimento_Sentinela/media/user/SCRAPE/test/2021-10-milton-nascimento/extracted/Milton%20Nas/04%20Can%C3%A7%C3%A3o%20Da%20America.mp3", nome: "Canção Da America" },
-            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/01%20Av%C3%B4hai.mp3", nome: "Avôhai" },
-            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/02%20Vila%20Do%20Sossego.mp3", nome: "Vila Do Sossego" },
-            { url: "https://ia800906.us.archive.org/24/items/1978-ze-ramalho/03%20Ch%C3%A3o%20De%20Giz.mp3", nome: "Chão De Giz" },
-            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/04%20A%20Noite%20Preta.mp3", nome: "A Noite Preta" },
-            { url: "https://ia600906.us.archive.org/24/items/1978-ze-ramalho/05%20A%20Dan%C3%A7a%20Das%20Borboletas.mp3", nome: "A Dança Das Borboletas" },
-            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/06%20Bicho%20De%207%20Cabe%C3%A7as.mp3", nome: "Bicho De 7 Cabeças" },
-            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/07%20Adeus%20Segunda-Feira%20Cinzenta.mp3", nome: "Adeus Segunda-Feira Cinzenta" },
-            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/08%20Meninas%20De%20Albar%C3%A3.mp3", nome: "Meninas De Albarã" },
-            { url: "https://ia800706.us.archive.org/8/items/1968-caetano-veloso_202504/01%20Tropic%C3%A1lia.mp3", nome: "Tropicália" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/02%20Clarice.mp3", nome: "Clarice" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/03%20No%20dia%20em%20que%20vim-me%20embora.mp3", nome: "No dia em que vim-me embora" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/04%20Alegria%2C%20alegria.mp3", nome: "Alegria, alegria" },
-            { url: "https://ia800706.us.archive.org/8/items/1968-caetano-veloso_202504/05%20Onde%20andar%C3%A1s.mp3", nome: "Onde andarás" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/06%20Anuncia%C3%A7%C3%A3o.mp3", nome: "Anunciação" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/07%20Superbacana.mp3", nome: "Superbacana" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/08%20Paisagem%20%C3%BAtil.mp3", nome: "Paisagem útil" },
-            { url: "https://ia800706.us.archive.org/8/items/1968-caetano-veloso_202504/09%20Clara.mp3", nome: "Veloso Clara" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/10%20Soy%20loco%20por%20ti%2C%20Am%C3%A9rica.mp3", nome: "Soy loco por ti, América" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/11%20Ave-Maria.mp3", nome: "Ave-Maria" },
-            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/12%20Eles.mp3", nome: "Eles" },
-            { url: "https://ia801203.us.archive.org/22/items/1969-gal-costa_202506/01%20-%20N%C3%A3o%20identificado.mp3", nome: "Não identificado" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/02%20-%20Sebastiana%20%28part.%20Gilberto%20Gil%29.mp3", nome: "Sebastiana part Gilberto Gil" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/03%20-%20Lost%20in%20the%20Paradise.mp3", nome: "Lost in the Paradise" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/04%20-%20Namorinho%20de%20port%C3%A3o%20%28part.%20Gilberto%20Gil%29.mp3", nome: "Namorinho de portão part Gilberto Gil" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/05%20-%20Saudosismo.mp3", nome: "Saudosismo" },
-            { url: "https://ia801203.us.archive.org/22/items/1969-gal-costa_202506/06%20-%20Se%20voc%C3%AA%20pensa.mp3", nome: "Se você pensa" },
-            { url: "https://ia801203.us.archive.org/22/items/1969-gal-costa_202506/07%20-%20Vou%20recome%C3%A7ar.mp3", nome: "Vou recomeçar" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/08%20-%20Divino%2C%20maravilhoso.mp3", nome: "Divino, maravilhoso" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/09%20-%20Que%20pena%20%28ele%20j%C3%A1%20n%C3%A3o%20gosta%20mais%20de%20mim%29%20%28part.%20Caetano%20Veloso%29.mp3", nome: "Que pena part Caetano Veloso" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/10%20-%20Baby%20%28part.%20Caetano%20Veloso%29.mp3", nome: "Baby (part. Caetano Veloso)" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/11%20-%20A%20coisa%20mais%20linda%20que%20existe.mp3", nome: "A coisa mais linda que existe" },
-            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/12%20-%20Deus%20%C3%A9%20o%20amor.mp3", nome: "Deus é o amor" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/01%20-%20Mas%2C%20Que%20Nada%21.mp3", nome: "Mas, que nada!" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/02%20-%20Tim%2C%20Dom%2C%20Dom.mp3", nome: "Tim, dom, dom" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/03%20-%20Balanca%20Pema.mp3", nome: "Balanca Pema" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/04%20-%20Vem%2C%20Morena%2C%20Vem.mp3", nome: "Vem, morena, vem" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/05%20-%20Chove%2C%20Chuva.mp3", nome: "Chove, chuva" },
-            { url: "https://ia801308.us.archive.org/18/items/1963-jorge-ben-samba-esquema-novo/06%20-%20E%20So%20Sambar.mp3", nome: "É só sambar" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/07%20-%20Rosa%2C%20Menina%20Rosa.mp3", nome: "Rosa, menina Rosa" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/08%20-%20Quero%20Esquecer%20Voce.mp3", nome: "Quero esquecer você" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/09%20-%20Uala%2C%20Ualala.mp3", nome: "Ualá, Ualalá" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/10%20-%20A%20Tamba.mp3", nome: "A tamba" },
-            { url: "https://ia801308.us.archive.org/18/items/1963-jorge-ben-samba-esquema-novo/11%20-%20Menina%20Bonita%20Nao%20Chora.mp3", nome: "Menina bonita não chora" },
-            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/12%20-%20Por%20Causa%20de%20Voce%2C%20Menina.mp3", nome: "Por causa de você, menina" },
-            { url: "https://dn710008.ca.archive.org/0/items/01-um-jeito-estupido-de-te-amar-maria-bethania/07-%20Bijuterias%20%28Abertura%29%20Jo%C3%A2o%20Bosco.mp3", nome: "Bijuterias" }
+            { url: "https://ia601409.us.archive.org/35/items/ElisComoNossosPais/Elis_ComoNossosPais.mp3", nome: "Elis Regina - Como Nossos Pais" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12793/Retratoembrancoepreto.mp3", nome: "Elis Regina e Tom Jobim - Retrato Branco e Preto" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12798/Aguasdemarco.mp3", nome: "Elis Regina e Tom Jobim - Aguas de março" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12790/Poise.mp3", nome: "Elis Regina e Tom Jobim - Pois é" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12797/Modinha.mp3", nome: "Elis Regina e Tom Jobim - Modinha" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12787/Triste.mp3", nome: "Elis Regina e Tom Jobim - Triste" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12796/Corcovado.mp3", nome: "Elis Regina e Tom Jobim - Corcovado" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12788/Oquetinhadeser.mp3", nome: "Elis Regina e Tom Jobim - O que tinha de ser" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12793/Retratoembrancoepreto.mp3", nome: "Elis Regina e Tom Jobim - Retrato em branco e preto" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12383/The%20Girl%20From%20Ipanema.mp3", nome: "Tom Jobim - The girl from Ipanema" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14586/05hinoaosol.mp3", nome: "Tom Jobim - Hino Ao Sol" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14587/06descendoomorro.mp3", nome: "Tom Jobim - Descendo o Morro" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14588/04osambadeamanha.mp3", nome: "Tom Jobim - O samba de amanhã" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14589/03noitesdorio.mp3", nome: "Tom Jobim - Noites do Rio" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/14590/02arpoador.mp3", nome: "Tom Jobim - Arpoador" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12099/Shesacarioca.mp3", nome: "Tom Jobim - Ela é carioca" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12100/Aguadebeber.mp3", nome: "Tom Jobim - Agua de beber" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12101/Surfboard.mp3", nome: "Tom Jobim - Surfboard" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12102/Uselesslandscape.mp3", nome: "Tom Jobim - Inútil paisagem" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12889/Boto.mp3", nome: "Tom Jobim - Bôto" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13412/Wave.mp3", nome: "Tom Jobim - Wave" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13413/Chegadesaudade.mp3", nome: "Tom Jobim - Chega de saudade" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13415/Sambadoaviao.mp3", nome: "Tom Jobim - Samba do avião" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13416/GarotadeIpanema.mp3", nome: "Tom Jobim - Garota de Ipanema" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13423/Modinhaseresta.mp3", nome: "Tom Jobim - Modinha Seresta n° 5" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13422/Modinha.mp3", nome: "Tom Jobim - Modinha" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13425/Cantacantamais.mp3", nome: "Tom Jobim - Canta, canta mais" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13426/Eunaoexistosemvoce.mp3", nome: "Tom Jobim - Eu não existo sem você" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13427/Porcausadevoce.mp3", nome: "Tom Jobim - Por causa de você" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13428/Sucedeuassim.mp3", nome: "Tom Jobim - Sucedeu assim" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13429/Imagina.mp3", nome: "Tom Jobim - Imagina" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13426/Eunaoexistosemvoce.mp3", nome: "Tom Jobim - Eu não existo sem você" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13430/Euseiquevouteamar.mp3", nome: "Tom Jobim - Eu sei que vou te amar" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13431/Cancaoamordemais.mp3", nome: "Tom Jobim - Canção do amor demais" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13434/18%20Derradeira%20Primavera.mp3", nome: "Tom Jobim - Derradeira primavera" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13168/Someonetolightup.mp3", nome: "Tom Jobim - Se todos fossem iguais a você" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13161/Offkey.mp3", nome: "Tom Jobim - Desafinado" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13154/Dreamer.mp3", nome: "Tom Jobim - Vivo sonhando" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13156/OlhaMaria.mp3", nome: "Tom Jobim - Olha Maria" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13157/Onenotesamba.mp3", nome: "Tom Jobim - Samba de uma nota só" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13160/Marina.mp3", nome: "Tom Jobim - Marina del Rey" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13165/Chovendoroseira.mp3", nome: "Tom Jobim - Na Roseira" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/13172/SongoftheSabia.mp3", nome: "Tom Jobim - Sabiá" },
+            { url: "https://www.jobim.org/jobim/bitstream/handle/2010/12383/The%20Girl%20From%20Ipanema.mp3", nome: "Frank Sinatra - The Girl From Ipanema" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/01%20Chega%20de%20saudade.mp3", nome: "João Gilberto - Chega de saudade" },
+            { url: "https://ia801904.us.archive.org/33/items/joao-gilberto-chega-de-saudade/02%20Lobo%20bobo.mp3", nome: "João Gilberto - Lobo bobo João" },
+            { url: "https://ia801904.us.archive.org/33/items/joao-gilberto-chega-de-saudade/03%20Brigas%2C%20nunca%20mais.mp3", nome: "João Gilberto - Brigas, nunca mais" },
+            { url: "https://ia801904.us.archive.org/33/items/joao-gilberto-chega-de-saudade/05%20Saudade%20fez%20um%20samba.mp3", nome: "João Gilberto - Saudade fez um samba" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/06%20Maria%20Ningu%C3%A9m.mp3", nome: "João Gilberto - Maria Ninguém" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/07%20Desafinado.mp3", nome: "João Gilberto - Desafinado" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/08%20Rosa%20morena.mp3", nome: "João Gilberto - Rosa morena" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/09%20Morena%20boca%20de%20ouro.mp3", nome: "João Gilberto - Morena boca de ouro" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/10%20Bim%20bom.mp3", nome: "João Gilberto - Bim bom" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/11%20Aos%20p%C3%A9s%20da%20cruz.mp3", nome: "João Gilberto - Aos pés da cruz" },
+            { url: "https://dn721309.ca.archive.org/0/items/joao-gilberto-chega-de-saudade/12%20%C3%89%20luxo%20s%C3%B3.mp3", nome: "João Gilberto - É luxo só" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/01%20-%20Deus%20lhe%20pague.mp3", nome: "Chico Buarque - Deus lhe pague" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/02%20-%20Cotidiano.mp3", nome: "Chico Buarque - Cotidiano" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/03%20-%20Desalento.mp3", nome: "Chico Buarque - Desalento" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/04%20-%20Constru%C3%A7ao.mp3", nome: "Chico Buarque - Construção" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/05%20-%20Cordao.mp3", nome: "Chico Buarque - Cordão" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/06%20-%20Olha%20Maria.mp3", nome: "Chico Buarque - Olha Maria" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/07%20-%20Samba%20de%20Orly.mp3", nome: "Chico Buarque - Samba de Orly" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/08%20-%20Valsinha.mp3", nome: "Chico Buarque - Valsinha" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/09%20-%20Minha%20historia%20%28Ges%C3%B9bambino%29.mp3", nome: "Chico Buarque - Minha história Gesùbambino" },
+            { url: "https://dn721208.ca.archive.org/0/items/1971-chico-buarque-construcao/10%20-%20Acalanto.mp3", nome: "Chico Buarque - Acalanto" },
+            { url: "https://dn720303.ca.archive.org/0/items/Milton-Nascimento_Sentinela/media/user/SCRAPE/test/2021-10-milton-nascimento/extracted/Milton%20Nas/04%20Can%C3%A7%C3%A3o%20Da%20America.mp3", nome: "Milton Nascimento - Canção Da America" },
+            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/01%20Av%C3%B4hai.mp3", nome: "Zé Ramalho - Avôhai" },
+            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/02%20Vila%20Do%20Sossego.mp3", nome: "Zé Ramalho - Vila Do Sossego" },
+            { url: "https://ia800906.us.archive.org/24/items/1978-ze-ramalho/03%20Ch%C3%A3o%20De%20Giz.mp3", nome: "Zé Ramalho - Chão De Giz" },
+            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/04%20A%20Noite%20Preta.mp3", nome: "Zé Ramalho - A Noite Preta" },
+            { url: "https://ia600906.us.archive.org/24/items/1978-ze-ramalho/05%20A%20Dan%C3%A7a%20Das%20Borboletas.mp3", nome: "Zé Ramalho - A Dança Das Borboletas" },
+            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/06%20Bicho%20De%207%20Cabe%C3%A7as.mp3", nome: "Zé Ramalho - Bicho De 7 Cabeças" },
+            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/07%20Adeus%20Segunda-Feira%20Cinzenta.mp3", nome: "Zé Ramalho - Adeus Segunda-Feira Cinzenta" },
+            { url: "https://dn721306.ca.archive.org/0/items/1978-ze-ramalho/08%20Meninas%20De%20Albar%C3%A3.mp3", nome: "Zé Ramalho - Meninas De Albarã" },
+            { url: "https://ia800706.us.archive.org/8/items/1968-caetano-veloso_202504/01%20Tropic%C3%A1lia.mp3", nome: "Caetano Veloso - Tropicália" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/02%20Clarice.mp3", nome: "Caetano Veloso - Clarice" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/03%20No%20dia%20em%20que%20vim-me%20embora.mp3", nome: "Caetano Veloso - No dia em que vim-me embora" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/04%20Alegria%2C%20alegria.mp3", nome: "Caetano Veloso - Alegria, alegria" },
+            { url: "https://ia800706.us.archive.org/8/items/1968-caetano-veloso_202504/05%20Onde%20andar%C3%A1s.mp3", nome: "Caetano Veloso - Onde andarás" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/06%20Anuncia%C3%A7%C3%A3o.mp3", nome: "Caetano Veloso - Anunciação" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/07%20Superbacana.mp3", nome: "Caetano Veloso - Superbacana" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/08%20Paisagem%20%C3%BAtil.mp3", nome: "Caetano Veloso - Paisagem útil" },
+            { url: "https://ia800706.us.archive.org/8/items/1968-caetano-veloso_202504/09%20Clara.mp3", nome: "Caetano Veloso - Veloso Clara" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/10%20Soy%20loco%20por%20ti%2C%20Am%C3%A9rica.mp3", nome: "Caetano Veloso - Soy loco por ti, América" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/11%20Ave-Maria.mp3", nome: "Caetano Veloso - Ave-Maria" },
+            { url: "https://dn721904.ca.archive.org/0/items/1968-caetano-veloso_202504/12%20Eles.mp3", nome: "Caetano Veloso - Eles" },
+            { url: "https://ia801203.us.archive.org/22/items/1969-gal-costa_202506/01%20-%20N%C3%A3o%20identificado.mp3", nome: "Gal Costa - Não identificado" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/02%20-%20Sebastiana%20%28part.%20Gilberto%20Gil%29.mp3", nome: "Gal Costa - Sebastiana part Gilberto Gil" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/03%20-%20Lost%20in%20the%20Paradise.mp3", nome: "Gal Costa - Lost in the Paradise" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/04%20-%20Namorinho%20de%20port%C3%A3o%20%28part.%20Gilberto%20Gil%29.mp3", nome: "Gal Costa - Namorinho de portão part Gilberto Gil" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/05%20-%20Saudosismo.mp3", nome: "Gal Costa - Saudosismo" },
+            { url: "https://ia801203.us.archive.org/22/items/1969-gal-costa_202506/06%20-%20Se%20voc%C3%AA%20pensa.mp3", nome: "Gal Costa - Se você pensa" },
+            { url: "https://ia801203.us.archive.org/22/items/1969-gal-costa_202506/07%20-%20Vou%20recome%C3%A7ar.mp3", nome: "Gal Costa - Vou recomeçar" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/08%20-%20Divino%2C%20maravilhoso.mp3", nome: "Gal Costa - Divino, maravilhoso" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/09%20-%20Que%20pena%20%28ele%20j%C3%A1%20n%C3%A3o%20gosta%20mais%20de%20mim%29%20%28part.%20Caetano%20Veloso%29.mp3", nome: "Gal Costa - Que pena part Caetano Veloso" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/10%20-%20Baby%20%28part.%20Caetano%20Veloso%29.mp3", nome: "Baby (Gal Costa - part. Caetano Veloso)" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/11%20-%20A%20coisa%20mais%20linda%20que%20existe.mp3", nome: "Gal Costa - A coisa mais linda que existe" },
+            { url: "https://dn720700.ca.archive.org/0/items/1969-gal-costa_202506/12%20-%20Deus%20%C3%A9%20o%20amor.mp3", nome: "Gal Costa - Deus é o amor" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/01%20-%20Mas%2C%20Que%20Nada%21.mp3", nome: "Jorge Ben -Mas, que nada!" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/02%20-%20Tim%2C%20Dom%2C%20Dom.mp3", nome: "Jorge Ben - Tim, dom, dom" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/03%20-%20Balanca%20Pema.mp3", nome: "Jorge Ben - Balanca Pema" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/04%20-%20Vem%2C%20Morena%2C%20Vem.mp3", nome: "Jorge Ben - Vem, morena, vem" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/05%20-%20Chove%2C%20Chuva.mp3", nome: "Jorge Ben - Chove, chuva" },
+            { url: "https://ia801308.us.archive.org/18/items/1963-jorge-ben-samba-esquema-novo/06%20-%20E%20So%20Sambar.mp3", nome: "Jorge Ben - É só sambar" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/07%20-%20Rosa%2C%20Menina%20Rosa.mp3", nome: "Jorge Ben - Rosa, menina Rosa" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/08%20-%20Quero%20Esquecer%20Voce.mp3", nome: "Jorge Ben - Quero esquecer você" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/09%20-%20Uala%2C%20Ualala.mp3", nome: "Jorge Ben - Ualá, Ualalá" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/10%20-%20A%20Tamba.mp3", nome: "Jorge Ben - A tamba" },
+            { url: "https://ia801308.us.archive.org/18/items/1963-jorge-ben-samba-esquema-novo/11%20-%20Menina%20Bonita%20Nao%20Chora.mp3", nome: "Jorge Ben - Menina bonita não chora" },
+            { url: "https://dn721803.ca.archive.org/0/items/1963-jorge-ben-samba-esquema-novo/12%20-%20Por%20Causa%20de%20Voce%2C%20Menina.mp3", nome: "Jorge Ben - Por causa de você, menina" },
+            { url: "https://dn710008.ca.archive.org/0/items/01-um-jeito-estupido-de-te-amar-maria-bethania/07-%20Bijuterias%20%28Abertura%29%20Jo%C3%A2o%20Bosco.mp3", nome: "João Bosco - Bijuterias" }
         ];
 
         let indiceAtual = 0;
 
+        // Renderiza a lista automaticamente
+        const listaDiv = document.getElementById('lista');
+        tracks.forEach((track, i) => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.id = 'track-' + i;
+            div.onclick = () => selecionar(i);
+            div.innerHTML = `<span>${track.nome}</span>`;
+            listaDiv.appendChild(div);
+        });
+
         function selecionar(index) {
             indiceAtual = index;
+            atualizarInterface();
             enviarParaOApp();
+        }
+
+        function atualizarInterface() {
+            // Remove a classe active de todos
+            document.querySelectorAll('.item').forEach(el => el.classList.remove('active'));
+            // Adiciona na música atual
+            const elementoAtivo = document.getElementById('track-' + indiceAtual);
+            if (elementoAtivo) {
+                elementoAtivo.classList.add('active');
+                // Faz a lista rolar automaticamente para a música se ela estiver fora da visão
+                elementoAtivo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
 
         function enviarParaOApp() {
@@ -276,14 +206,17 @@
         window.addEventListener('message', function(event) {
             if (event.data === 'next') {
                 indiceAtual = (indiceAtual + 1) % tracks.length;
-                enviarParaOApp();
+                selecionar(indiceAtual);
             } else if (event.data === 'prev') {
                 indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
-                enviarParaOApp();
+                selecionar(indiceAtual);
             }
         });
+
+        // Inicia a primeira música visualmente
+        atualizarInterface();
     </script>
-    <script>
+        <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js');
     }
