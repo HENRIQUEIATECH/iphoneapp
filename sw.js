@@ -1,5 +1,5 @@
 const CACHE_NAME = 'rba-v2';
-const OFFLINE_URL = 'offline.html';
+const OFFLINE_URL = 'minijogo.html';
 
 // Instala e guarda a página offline no cache do celular
 self.addEventListener('install', (event) => {
