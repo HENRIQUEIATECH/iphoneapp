@@ -22,18 +22,85 @@
         .item span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90%; }
     </style>
 </head>
-<body>
+<body> 
     <div id="lista">
-        <div class="item" onclick="selecionar(0)"><span>Tonico e Tinoco 1</span></div>
-        <div class="item" onclick="selecionar(1)"><span>Tonico e Tinoco 2</span></div>
-        <div class="item" onclick="selecionar(3)"><span>Tonico e Tinoco 3</span></div>
+        <div class="item" onclick="selecionar(0)"><span>Tonico e Tinoco Tristeza do Jeca</span></div>
+        <div class="item" onclick="selecionar(1)"><span>Tonico e Tinoco Pé de Ipê</span></div>
+        <div class="item" onclick="selecionar(3)"><span>Tonico e Tinoco Eu e a Lua</span></div>
+        <div class="item" onclick="selecionar(4)"><span>Cascatinha e Inhana Índia</span></div>
+        <div class="item" onclick="selecionar(5)"><span>Cascatinha e Inhana Recordando</span></div>
+        <div class="item" onclick="selecionar(6)"><span>Cascatinha e Inhana Assunción</span></div>
+        <div class="item" onclick="selecionar(7)"><span>Cascatinha e Inhana Desilusão</span></div>
+        <div class="item" onclick="selecionar(8)"><span>Cascatinha e Inhana Meu Primeiro Amor</span></div>
+        <div class="item" onclick="selecionar(9)"><span>Cascatinha e Inhana Iracema</span></div>
+        <div class="item" onclick="selecionar(10)"><span>Cascatinha e Inhana Queira-Me Muito</span></div>
+        <div class="item" onclick="selecionar(11)"><span>Tonico e Tinoco Saudades de Ouro Preto</span></div>
+        <div class="item" onclick="selecionar(12)"><span>Tonico e Tinoco Chico Mineiro</span></div>
+        <div class="item" onclick="selecionar(13)"><span>Tonico e Tinoco Aparecida do Norte</span></div>
+        <div class="item" onclick="selecionar(14)"><span>Tonico e Tinoco Princesa</span></div>
+        <div class="item" onclick="selecionar(15)"><span>Tonico e Tinoco Adeus Morena Adeus</span></div>
+        <div class="item" onclick="selecionar(16)"><span>Tonico e Tinoco Rio Grande</span></div>
+        <div class="item" onclick="selecionar(17)"><span>Tonico e Tinoco Saudade de Matão</span></div>
+        <div class="item" onclick="selecionar(18)"><span>Tonico e Tinoco Cana Verde</span></div>
+        <div class="item" onclick="selecionar(19)"><span>Tonico e Tinoco Caboca</span></div>
+        <div class="item" onclick="selecionar(20)"><span>Tonico e Tinoco Pé de Ipê</span></div>
+        <div class="item" onclick="selecionar(21)"><span>Tonico e Tinoco Saudades de Ouro Preto</span></div>
+        <div class="item" onclick="selecionar(22)"><span>Tonico e Tinoco Chico Mineiro</span></div>
+        <div class="item" onclick="selecionar(23)"><span>Tiâo Carreiro e Pardinho Alma de Boêmio</span></div>
+        <div class="item" onclick="selecionar(24)"><span>Tiâo Carreiro e Pardinho Borboleta do Asfalto</span></div>
+        <div class="item" onclick="selecionar(25)"><span>Tiâo Carreiro e Pardinho Punhal da Falsidade</span></div>
+        <div class="item" onclick="selecionar(26)"><span>Tiâo Carreiro e Pardinho Amigo Sincero</span></div>
+        <div class="item" onclick="selecionar(27)"><span>Tiâo Carreiro e Pardinho Teus Beijos</span></div>
+        <div class="item" onclick="selecionar(28)"><span>Tiâo Carreiro e Pardinho Despedida</span></div>
+        <div class="item" onclick="selecionar(29)"><span>Tiâo Carreiro e Pardinho Tormento</span></div>
+        <div class="item" onclick="selecionar(30)"><span>Tiâo Carreiro e Pardinho Nove e Nove</span></div>
+        <div class="item" onclick="selecionar(31)"><span>Tiâo Carreiro e Pardinho Rei do Gado</span></div>
+        <div class="item" onclick="selecionar(32)"><span>Tiâo Carreiro e Pardinho Urutú Cruzeiro</span></div>
+        <div class="item" onclick="selecionar(33)"><span>Tiâo Carreiro e Pardinho Minas Gerais</span></div>
+        <div class="item" onclick="selecionar(34)"><span>Tiâo Carreiro e Pardinho Carteiro</span></div>
+        <div class="item" onclick="selecionar(35)"><span>Tiâo Carreiro e Pardinho Pagode em Brasília</span></div>
+        <div class="item" onclick="selecionar(36)"><span>Tiâo Carreiro e Pardinho Maria Ciumenta</span></div>
     </div>
 
     <script>
         const tracks = [
             { url: "https://ia601005.us.archive.org/6/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/12%20-%20Tristeza%20do%20Jeca.mp3", nome: "Tristeza do Jeca" },
             { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Pé de Ipê" },
-            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Eu e a Lua" }
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Eu e a Lua" },
+            { url: "https://dn721904.ca.archive.org/0/items/1955-cascatinha-e-inhana-cantando-pra-voce/08%20-%20%C3%8Dndia.mp3", nome: "Índia" },
+            { url: "https://ia601001.us.archive.org/15/items/1955-cascatinha-e-inhana-cantando-pra-voce/07%20-%20Recordando.mp3", nome: "Recordando" },
+            { url: "https://ia601001.us.archive.org/15/items/1955-cascatinha-e-inhana-cantando-pra-voce/06%20-%20Assunci%C3%B3n.mp3", nome: "Assunción" },
+            { url: "https://dn721904.ca.archive.org/0/items/1955-cascatinha-e-inhana-cantando-pra-voce/05%20-%20Desilus%C3%A3o.mp3", nome: "Desilusão" },
+            { url: "https://dn721904.ca.archive.org/0/items/1955-cascatinha-e-inhana-cantando-pra-voce/04%20-%20Meu%20Primeiro%20Amor.mp3", nome: "Meu Primeiro Amor" },
+            { url: "https://dn721904.ca.archive.org/0/items/1955-cascatinha-e-inhana-cantando-pra-voce/03%20-%20Iracema.mp3", nome: "Iracema" },
+            { url: "https://dn721904.ca.archive.org/0/items/1955-cascatinha-e-inhana-cantando-pra-voce/02%20-%20Queira-me%20Muito.mp3", nome: "Queira-Me Muito" },
+            { url: "https://dn721904.ca.archive.org/0/items/1955-cascatinha-e-inhana-cantando-pra-voce/01%20-%20Solid%C3%A3o%20%28Che-picassu-mi%29.mp3", nome: "Solidão" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Saudades de Ouro Preto" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Chico Mineiro" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/06%20-%20Aparecida%20do%20Norte.mp3", nome: "Aparecida do Norte" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/05%20-%20Princesa.mp3", nome: "Princesa" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/04%20-%20Adeus%20Morena%20Adeus.mp3", nome: "Adeus Morena Adeus" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/03%20-%20Rio%20Grande.mp3", nome: "Rio Grande" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/02%20-%20Saudade%20de%20Matao.mp3", nome: "Saudade de Matão" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/01%20-%20Cana%20Verde.mp3", nome: "Cana Verde" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/11%20-%20Cabocla.mp3", nome: "Caboca" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Pé de Ipê" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Saudades de Ouro Preto" },
+            { url: "https://dn720703.ca.archive.org/0/items/1958-tonico-e-tinoco-com-suas-modas-sertanejas/10%20-%20Pe%20de%20Ipe.mp3", nome: "Chico Mineiro" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/01-Alma%20de%20boemio.mp3", nome: "Alma de Boêmio" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/02-Borboleta%20do%20asfalto.mp3", nome: "Borboleta do Asfalto" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/03-Punhal%20da%20falsidade%20%28mulher%20sem%20nome%29.mp3", nome: "Punhal da Falsidade" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/04-Amigo%20sincero.mp3", nome: "Amigo Sincero" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/05-Teus%20beijos.mp3", nome: "Teus Beijos" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/06-Despedida.mp3", nome: "Despedida" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/07-Tormento.mp3", nome: "Tormento" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/08-Nove%20e%20nove.mp3", nome: "Nove e Nove" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/09-Rei%20do%20gado.mp3", nome: "Rei do Gado" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/10-Urutu%20cruzeiro.mp3", nome: "Urutú Cruzeiro" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/11-Minas%20Gerais.mp3", nome: "Minas Gerais" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/12-Carteiro.mp3", nome: "Carteiro" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/13-Pagode%20em%20Brasilia.mp3", nome: "Pagode em Brasília" },
+            { url: "https://dn721509.ca.archive.org/0/items/1961-tiao-carreiro-e-pardinho-rei-do-gado/14-Maria%20ciumenta.mp3", nome: "Maria Ciumenta" }
         ];
 
         let indiceAtual = 0;
