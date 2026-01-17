@@ -1,22 +1,50 @@
-const CACHE_NAME = 'rba-v1';
-const OFFLINE_URL = 'offline.html';
+const CACHE_NAME = 'rba-v3'; // Versão 3 para atualizar o cache
+const ASSETS_TO_CACHE = [
+    'offline.html',
+    'logo.png',         // Certifique-se que o nome está idêntico ao arquivo
+    'icone-app.png',    // O ícone usado no jogo
+    'indexapp.html'        // Salva a página principal para evitar tela branca
+];
 
-// Instala e guarda a página offline no cache do celular
+// INSTALAÇÃO: Guarda tudo o que é essencial no celular
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            return cache.add(OFFLINE_URL);
+            console.log('RBA: Guardando arquivos para uso offline...');
+            return cache.addAll(ASSETS_TO_CACHE);
         })
     );
 });
 
-// Quando o navegador tenta carregar algo e falha (offline), ele entrega a página do cache
+// ATIVAÇÃO: Limpa versões antigas do app (v1, v2) para não ocupar espaço
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cache) => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        })
+    );
+});
+
+// BUSCA (FETCH): A mágica acontece aqui
 self.addEventListener('fetch', (event) => {
-    if (event.request.mode === 'navigate') {
-        event.respondWith(
-            fetch(event.request).catch(() => {
-                return caches.match(OFFLINE_URL);
-            })
-        );
-    }
+    event.respondWith(
+        fetch(event.request).catch(() => {
+            // Se a internet falhar, ele tenta buscar o que foi pedido no cache
+            return caches.match(event.request).then((response) => {
+                if (response) {
+                    return response;
+                }
+                // Se for uma navegação de página e não tiver no cache, mostra o jogo offline
+                if (event.request.mode === 'navigate') {
+                    return caches.match('offline.html');
+                }
+            });
+        })
+    );
 });
