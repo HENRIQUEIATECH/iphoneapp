@@ -1,115 +1,55 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <style>
-        body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
-        #lista { display: flex; flex-direction: column; width: 100%; }
-        
-        .item { 
-            padding: 16px 15px; 
-            border-bottom: 1px solid rgba(8, 68, 36, 0.08); 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* Estilo para a música que está tocando */
-        .item.active { 
-            background-color: rgba(8, 68, 36, 0.05); 
-            font-weight: 700;
-            color: #084424;
-            border-left: 4px solid #084424;
-        }
-
-        .item::after { content: "▶"; font-size: 10px; opacity: 0.3; margin-left: 10px; }
-        .item.active::after { content: "🔊"; opacity: 1; font-size: 12px; }
-        
-        .item:active { background-color: rgba(8, 68, 36, 0.1); }
-        
-        .item span { 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            flex: 1;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programação Diária</title>
 </head>
-<body> 
-    <div id="lista">
-        </div>
+<body>
+    <header>
+        <h1>Verificando conteúdo do dia...</h1>
+    </header>
 
     <script>
-        const tracks = [
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/14-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 14/01/2026 - 21 Horas" },
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/15-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 15/01/2026 - 21 Horas" },
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/01/2026 - 21 Horas" },
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/01/2026 - 21 Horas" }
-        ];
+        window.onload = function() {
+            const agora = new Date();
+            
+            // Formata a data como DD/MM (exemplo: 12/01)
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            const dataHoje = dia + "/" + mes;
 
-        let indiceAtual = 0;
+            // LISTA DE REDIRECIONAMENTOS
+            // Você pode adicionar todos os dias do ano aqui
+            const linksPorData = {
+                "A Voz do Brasil 16/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3",
+                "A Voz do Brasil 17/01/2026 Reprise dia 16": "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3",
+                "A Voz do Brasil 18/01/2026 Reprise dia 16": "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3",
+                "A Voz do Brasil 19/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3",
+                "A Voz do Brasil 20/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/20-01-26-a-voz-do-brasil.mp3",
+                "A Voz do Brasil 21/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/21-01-26-a-voz-do-brasil.mp3",
+                "A Voz do Brasil 22/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/22-01-26-a-voz-do-brasil.mp3",
+                "A Voz do Brasil 23/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3"
+                // Adicione quantos dias quiser seguindo o padrão "DD/MM": "link",
+            };
 
-        // Renderiza a lista automaticamente
-        const listaDiv = document.getElementById('lista');
-        tracks.forEach((track, i) => {
-            const div = document.createElement('div');
-            div.className = 'item';
-            div.id = 'track-' + i;
-            div.onclick = () => selecionar(i);
-            div.innerHTML = `<span>${track.nome}</span>`;
-            listaDiv.appendChild(div);
-        });
-
-        function selecionar(index) {
-            indiceAtual = index;
-            atualizarInterface();
-            enviarParaOApp();
-        }
-
-        function atualizarInterface() {
-            // Remove a classe active de todos
-            document.querySelectorAll('.item').forEach(el => el.classList.remove('active'));
-            // Adiciona na música atual
-            const elementoAtivo = document.getElementById('track-' + indiceAtual);
-            if (elementoAtivo) {
-                elementoAtivo.classList.add('active');
-                // Faz a lista rolar automaticamente para a música se ela estiver fora da visão
-                elementoAtivo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Verifica se a data de hoje está na lista
+            if (linksPorData[dataHoje]) {
+                window.location.href = linksPorData[dataHoje];
+            } else {
+                // Mensagem caso o dia atual não tenha um link cadastrado
+                document.body.innerHTML = `
+                    <div style="text-align:center; margin-top:50px; font-family: sans-serif;">
+                        <h1>Conteúdo Indisponível</h1>
+                        <p>Não encontramos uma programação específica para hoje (${dataHoje}).</p>
+                        <a href="https://iartium.com/iphoneapp/indexapp.html">Voltar para o início</a>
+                    </div>
+                `;
             }
-        }
-
-        function enviarParaOApp() {
-            const musica = tracks[indiceAtual];
-            if (window.parent) {
-                window.parent.postMessage({
-                    tipo: 'tocar',
-                    url: musica.url,
-                    nome: musica.nome
-                }, '*');
-            }
-        }
-
-        // Responde aos botões do App Principal
-        window.addEventListener('message', function(event) {
-            if (event.data === 'next') {
-                indiceAtual = (indiceAtual + 1) % tracks.length;
-                selecionar(indiceAtual);
-            } else if (event.data === 'prev') {
-                indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
-                selecionar(indiceAtual);
-            }
-        });
-
-        // Inicia a primeira música visualmente
-        atualizarInterface();
+        };
     </script>
-        <script>
+</body>
+</html>        <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js');
     }
