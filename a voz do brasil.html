@@ -3,55 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Programação Diária</title>
+    <title>Programação RBA</title>
+    <style>
+        body { 
+            background: #084424; 
+            color: #fcd404; 
+            font-family: -apple-system, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            text-align: center;
+        }
+        .container { padding: 20px; border: 2px solid #fcd404; border-radius: 15px; width: 80%; }
+        h1 { font-size: 22px; margin-bottom: 10px; }
+        p { color: white; margin-bottom: 20px; }
+        .botao {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #fcd404;
+            color: #084424;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Verificando conteúdo do dia...</h1>
-    </header>
+    <div id="conteudo" class="container">
+        <h1>Verificando programação...</h1>
+    </div>
 
     <script>
         window.onload = function() {
             const agora = new Date();
             
-            // Formata a data como DD/MM (exemplo: 12/01)
+            // Formata a data como DD/MM (exatamente como nas chaves abaixo)
             const dia = String(agora.getDate()).padStart(2, '0');
             const mes = String(agora.getMonth() + 1).padStart(2, '0');
-            const dataHoje = dia + "/" + mes;
+            const dataHoje = `${dia}/${mes}`;
 
-            // LISTA DE REDIRECIONAMENTOS
-            // Você pode adicionar todos os dias do ano aqui
-            const linksPorData = {
-                "A Voz do Brasil 16/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3",
-                "A Voz do Brasil 17/01/2026 Reprise dia 16": "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3",
-                "18/01": "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3",
-                "A Voz do Brasil 19/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3",
-                "A Voz do Brasil 20/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/20-01-26-a-voz-do-brasil.mp3",
-                "A Voz do Brasil 21/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/21-01-26-a-voz-do-brasil.mp3",
-                "A Voz do Brasil 22/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/22-01-26-a-voz-do-brasil.mp3",
-                "A Voz do Brasil 23/01/2026 21 Horas": "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3"
-                // Adicione quantos dias quiser seguindo o padrão "DD/MM": "link",
+            // LISTA DE PROGRAMAÇÃO ORGANIZADA
+            // "DATA": { nome: "O que vai aparecer", link: "url do áudio" }
+            const programacao = {
+                "16/01": { nome: "A Voz do Brasil - 16/01", link: "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3" },
+                "17/01": { nome: "A Voz do Brasil - Reprise", link: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3" },
+                "18/01": { nome: "A Voz do Brasil - Reprise Especial", link: "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3" },
+                "19/01": { nome: "A Voz do Brasil - Ao Vivo", link: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3" },
+                "20/01": { nome: "A Voz do Brasil - 20/01", link: "https://audios.ebc.com.br/radiogov/2026/01/20-01-26-a-voz-do-brasil.mp3" },
+                "21/01": { nome: "A Voz do Brasil - 21/01", link: "https://audios.ebc.com.br/radiogov/2026/01/21-01-26-a-voz-do-brasil.mp3" },
+                "22/01": { nome: "A Voz do Brasil - 22/01", link: "https://audios.ebc.com.br/radiogov/2026/01/22-01-26-a-voz-do-brasil.mp3" },
+                "23/01": { nome: "A Voz do Brasil - 23/01", link: "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3" }
             };
 
-            // Verifica se a data de hoje está na lista
-            if (linksPorData[dataHoje]) {
-                window.location.href = linksPorData[dataHoje];
+            const display = document.getElementById('conteudo');
+
+            if (programacao[dataHoje]) {
+                const hoje = programacao[dataHoje];
+                
+                // Atualiza a tela com o nome e o link
+                display.innerHTML = `
+                    <h1>${hoje.nome}</h1>
+                    <p>Programação do dia ${dataHoje}</p>
+                    <a href="${hoje.link}" class="botao">Ouvir Agora</a>
+                `;
+
+                // Redireciona automaticamente após 3 segundos (opcional)
+                setTimeout(() => {
+                    window.location.href = hoje.link;
+                }, 3000);
+
             } else {
-                // Mensagem caso o dia atual não tenha um link cadastrado
-                document.body.innerHTML = `
-                    <div style="text-align:center; margin-top:50px; font-family: sans-serif;">
-                        <h1>Conteúdo Indisponível</h1>
-                        <p>Não encontramos uma programação específica para hoje (${dataHoje}).</p>
-                    </div>
+                display.innerHTML = `
+                    <h1>Conteúdo Indisponível</h1>
+                    <p>Não há transmissão agendada para hoje (${dataHoje}).</p>
+                    <a href="indexapp.html" class="botao" style="background:white">Voltar à Rádio</a>
                 `;
             }
         };
     </script>
-</body>
-</html>
-</body>
-</html></body>
-</html>        <script>
+    <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js');
     }
