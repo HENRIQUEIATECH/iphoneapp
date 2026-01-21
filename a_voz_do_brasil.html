@@ -45,27 +45,35 @@
     <div id="lista"></div>
 
     <script>
-        // 1. Definição da Programação Diária (O que muda todo dia)
+        // 1. Geração Automática de Datas (Hoje e Ontem)
         const agora = new Date();
-        const dia = String(agora.getDate()).padStart(2, '0');
-        const mes = String(agora.getMonth() + 1).padStart(2, '0');
-        const dataHoje = `${dia}/${mes}`;
+        const ontem = new Date();
+        ontem.setDate(agora.getDate() - 1);
 
+        const formatarData = (d) => {
+            const dia = String(d.getDate()).padStart(2, '0');
+            const mes = String(d.getMonth() + 1).padStart(2, '0');
+            return `${dia}/${mes}`;
+        };
+
+        const dataHoje = formatarData(agora);
+        const dataOntem = formatarData(ontem);
+
+        // 2. Sua Lista Completa do Ano
         const linksDiarios = {
-                // --- JANEIRO ---
             "18/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
-            "19/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/01/2026 21 Horas" },
-            "20/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/20-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/01/2026 21 Horas" },
-            "21/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/21-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 21/01/2026 21 Horas" },
-            "22/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/22-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 22/01/2026 21 Horas" },
-            "23/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/01/2026 21 Horas" },
+            "19/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/01/2026" },
+            "20/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/20-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/01/2026" },
+            "21/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/21-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 21/01/2026" },
+            "22/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/22-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 22/01/2026" },
+            "23/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/01/2026" },
             "24/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
             "25/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
-            "26/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/26-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/01/2026 21 Horas" },
-            "27/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/27-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/01/2026 21 Horas" },
-            "28/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/28-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 28/01/2026 21 Horas" },
-            "29/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/29-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 29/01/2026 21 Horas" },
-            "30/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/30-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/01/2026 21 Horas" },
+            "26/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/26-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/01/2026" },
+            "27/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/27-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/01/2026" },
+            "28/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/28-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 28/01/2026" },
+            "29/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/29-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 29/01/2026" },
+            "30/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/30-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/01/2026" },
             "31/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
                 // --- FEVEREIRO ---
             "01/02": { url: "https://audios.ebc.com.br/radiogov/2026/01/30-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
@@ -137,25 +145,27 @@
                 // --- OUTUBRO ---
                 // --- NOVEMBRO ---
                 // --- DEZEMBRO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 01/04/2026" }
-            // Adicione os outros dias aqui...
+            "19/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/01/2026" }
         };
 
-        // 2. Playlist Fixa (O que sempre aparece)
+        // 3. Playlist Fixa (O que fica no final da lista)
         let tracks = [
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/14-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 14/01/2026" },
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/15-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 15/01/2026" }
+            { url: "https://audios.ebc.com.br/radiogov/2026/01/14-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 14/01" },
+            { url: "https://audios.ebc.com.br/radiogov/2026/01/15-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 15/01" }
         ];
 
-        // 3. Lógica de Redirecionamento Silencioso:
-        // Se existir algo para hoje, coloca no topo da lista
+        // 4. Lógica de Redirecionamento de 2 retornos (Hoje e Ontem)
+        // Adicionamos primeiro o de ontem e depois o de hoje no topo
+        if (linksDiarios[dataOntem]) {
+            tracks.unshift(linksDiarios[dataOntem]);
+        }
         if (linksDiarios[dataHoje]) {
-            tracks.unshift(linksDiarios[dataHoje]); 
+            tracks.unshift(linksDiarios[dataHoje]); // O de hoje fica em primeiro
         }
 
         let indiceAtual = 0;
 
-        // 4. Renderização da Interface
+        // 5. Renderização e Funções do App
         const listaDiv = document.getElementById('lista');
         function renderizarLista() {
             listaDiv.innerHTML = '';
@@ -186,7 +196,6 @@
             }
         }
 
-        // Responde ao player principal (Next/Prev)
         window.addEventListener('message', function(event) {
             if (event.data === 'next') {
                 selecionar((indiceAtual + 1) % tracks.length);
@@ -195,11 +204,9 @@
             }
         });
 
-        // Inicialização
         renderizarLista();
-        enviarParaOApp(); // Já começa tocando o item do dia
+        enviarParaOApp();
 
-        // Service Worker
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js');
         }
