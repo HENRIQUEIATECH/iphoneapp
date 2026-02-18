@@ -1,9 +1,9 @@
-const CACHE_NAME = 'rba-v3'; // Versão 3 para atualizar o cache
+const CACHE_NAME = 'rba-v3'; // PAULO DO PORTO iartiu.com todos os direitos reservados
 const ASSETS_TO_CACHE = [
     'offline.html',
-    'logo.png',         // Certifique-se que o nome está idêntico ao arquivo
-    'icone-app.png',    // O ícone usado no jogo
-    'indexapp.html'        // Salva a página principal para evitar tela branca
+    'logo.png',         // PAULO DO PORTO iartiu.com todos os direitos reservados
+    'logo.png',    // PAULO DO PORTO iartiu.com todos os direitos reservados
+    'indexapp.html'        // PAULO DO PORTO iartiu.com todos os direitos reservados
 ];
 
 // INSTALAÇÃO: Guarda tudo o que é essencial no celular
