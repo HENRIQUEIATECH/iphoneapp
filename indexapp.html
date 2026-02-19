@@ -2,492 +2,133 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Playlist RBA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Rádio Brasil Artes</title>
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#084424">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="RBA">
+    <link rel="apple-touch-icon" href="icone.png">
+
     <style>
-        /* Interface Clean da RBA */
-        body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
-        #lista { display: flex; flex-direction: column; width: 100%; }
-        
-        .item { 
-            padding: 16px 15px; 
-            border-bottom: 1px solid rgba(8, 68, 36, 0.08); 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .item.active { 
-            background-color: rgba(8, 68, 36, 0.05); 
-            font-weight: 700;
-            color: #084424;
-            border-left: 4px solid #084424;
-        }
-
-        .item::after { content: "▶"; font-size: 10px; opacity: 0.3; margin-left: 10px; }
-        .item.active::after { content: "🔊"; opacity: 1; font-size: 12px; }
-        .item:active { background-color: rgba(8, 68, 36, 0.1); }
-        
-        .item span { 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            flex: 1;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background-color: #f8f4dc; color: #084424; display: flex; flex-direction: column; min-height: 100vh; overflow: hidden; }
+        header { background-color: #084424; padding: 50px 20px 20px; text-align: center; }
+        header h1 { color: #fcd404; font-size: 22px; margin-bottom: 4px; }
+        .logo-pequena { height: 24px; margin: 0 auto 5px; display: block; cursor: pointer; }
+        .btn-home { color: #ffffff; font-size: 16px; cursor: pointer; }
+        main { flex: 1; padding: 20px; text-align: center; display: flex; flex-direction: column; overflow: hidden; }
+        section { display: none; flex: 1; flex-direction: column; }
+        section.ativa { display: flex; }
+        .slogan { font-style: italic; margin-bottom: 10px; font-size: 14px; }
+        .menu-links a { color: #084424; text-decoration: none; font-size: 18px; padding: 12px; display: block; cursor: pointer; border-bottom: 1px solid rgba(8,68,36,0.05); }
+        .controls { display: flex; justify-content: center; gap: 25px; margin: 15px 0; }
+        .btn-ctrl { cursor: pointer; font-size: 22px; font-weight: bold; background: none; border: none; color: #084424; padding: 10px; }
+        #status { font-size: 14px; color: #707c54; margin-bottom: 10px; height: 20px; font-weight: bold; }
+        iframe { width: 100%; flex: 1; border: none; background: transparent; }
+        footer { background-color: #084424; padding: 20px; text-align: center; }
+        .f1, .f2 { color: #ffffff; font-size: 14px; }
+        .f2 { color: #fcd404; }
+        .f3 { color: #707c54; font-size: 12px; margin-top: 10px; }
     </style>
 </head>
-<body> 
-    <div id="lista"></div>
+<body>
+
+    <header>
+        <h1>Rádio Brasil Artes</h1>
+        <div onclick="irParaHome()">
+            <img src="logo.png" alt="Logo RBA" class="logo-pequena">
+            <span class="btn-home">Página Principal</span>
+        </div>
+    </header>
+
+    <main>
+        <div id="status"></div>
+
+        <section id="home" class="ativa">
+            <p class="slogan">Onde o tempo faz uma pausa para a arte ecoar.</p>
+            <p class="frase-coracao">Nossa História não é feita apenas de anos, mas de cada nota que tocou o seu coração.</p>
+            <div class="menu-links">
+                <a onclick="abrirPlayer('classicos')">Clássicos Musicais</a>
+                <a onclick="abrirPlayer('sertanejo')">Sertanejo Raiz</a>
+                <a onclick="abrirPlayer('bossa')">Bossa Nova</a>
+                <a onclick="abrirPlayer('podcast')">PodCast & Saúde</a>
+                <a onclick="abrirPlayer('a_voz_do_brasil')">A Voz do Brasil</a>
+                <a onclick="abrirPlayer('historia')"><b>Nossa História</b></a>
+            </div>
+        </section>
+
+        <section id="player-view">
+            <h2 id="titulo-cat" style="font-weight: bold; text-transform: uppercase;"></h2>
+            <div class="controls">
+                <button class="btn-ctrl" onclick="prev()"> << </button>
+                <button class="btn-ctrl" id="playBtn" onclick="togglePlay()"> [ PLAY ] </button>
+                <button class="btn-ctrl" onclick="next()"> >> </button>
+            </div>
+            <iframe id="nav-audio"></iframe>
+        </section>
+
+        <audio id="playerAudio"></audio>
+    </main>
+
+    <footer>
+        <div class="f1">RBA 1.0</div>
+        <div class="f2">Alta Tecnologia | High Tech</div>
+        <div class="f3">© 2026 - Todos os Direitos Reservados</div>
+    </footer>
 
     <script>
-        // 1. Geração Automática de Datas (Hoje e Ontem)
-        const agora = new Date();
-        const ontem = new Date();
-        ontem.setDate(agora.getDate() - 1);
+        const audio = document.getElementById('playerAudio');
+        const iframe = document.getElementById('nav-audio');
+        const statusDiv = document.getElementById('status');
+        const playBtn = document.getElementById('playBtn');
 
-        const formatarData = (d) => {
-            const dia = String(d.getDate()).padStart(2, '0');
-            const mes = String(d.getMonth() + 1).padStart(2, '0');
-            return `${dia}/${mes}`;
-        };
-
-        const dataHoje = formatarData(agora);
-        const dataOntem = formatarData(ontem);
-
-        // 2. Sua Lista Completa do Ano
-        const linksDiarios = {
-            "18/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/16-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
-            "19/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/19-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/01/2026" },
-            "20/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/20-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/01/2026" },
-            "21/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/21-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 21/01/2026 21 Horas" },
-            "22/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/22-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 22/01/2026 21 Horas" },
-            "23/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/01/2026 21 Horas" },
-            "24/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/22-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
-            "25/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/23-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil - Reprise" },
-            "26/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/26-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/01/2026 21 Horas" },
-            "27/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/27-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/01/2026 21 Horas" },
-            "28/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/28-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 28/01/2026 21 Horas" },
-            "29/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/29-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 29/01/2026 21 Horas" },
-            "30/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/30-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/01/2026 21 Horas" },
-            "31/01": { url: "https://audios.ebc.com.br/radiogov/2026/01/29-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 29/01/2026 Reprise" },
-                // --- FEVEREIRO ---
-            "01/02": { url: "https://audios.ebc.com.br/radiogov/2026/01/30-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/01/2026 Reprise" },
-            "02/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/02-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/02/2026 21 Horas" },
-            "03/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/03-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/02/2026 21 Horas" },
-            "04/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/04-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/02/2026 21 Horas" },
-            "05/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/05-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/02/2026 21 Horas" },
-            "06/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/06-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/02/2026 21 Horas" },
-            "07/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/05-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/02/2026 Reprise" },
-            "08/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/06-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/02/2026 Reprise" },
-            "09/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/09-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/02/2026 21 Horas" },
-            "10/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/10-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/02/2026 21 Horas" },
-            "11/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/11-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/02/2026 21 Horas" },
-            "12/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/12-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/02/2026 21 Horas" },
-            "13/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/13-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/02/2026 21 Horas" },
-            "14/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/12-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/02/2026 Reprise" },
-            "15/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/13-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/02/2026 Reprise" },
-            "16/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/16-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/02/2026 21 Horas" },
-            "17/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/17-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/02/2026 21 Horas" },
-            "18/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/18-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/02/2026 21 Horas" },
-            "18/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/19-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/02/2026 21 Horas" },
-            "20/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/20-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/02/2026 21 Horas" },
-            "21/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/19-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/02/2026 Reprise" },
-            "22/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/20-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/02/2026 Reprise" },
-            "23/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/23-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/02/2026 21 Horas" },
-            "24/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/24-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/02/2026 21 Horas" },
-            "25/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/25-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/02/2026 21 Horas" },
-            "26/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/26-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/02/2026 21 Horas" },
-            "27/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/27-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/02/2026 21 Horas" },
-            "28/02": { url: "https://audios.ebc.com.br/radiogov/2026/02/26-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/02/2026 Reprise" },
-                // --- MARÇO ---
-            "01/03": { url: "https://audios.ebc.com.br/radiogov/2026/02/27-02-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/02/2026 Reprise" },
-            "02/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/02-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/03/2026 21 Horas" },
-            "03/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/03-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/03/2026 21 Horas" },
-            "04/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/04-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/03/2026 21 Horas" },
-            "05/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/05-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/03/2026 21 Horas" },
-            "06/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/06-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/03/2026 21 Horas" },
-            "07/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/05-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/03/2026 Reprise" },
-            "08/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/06-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/03/2026 Reprise" },
-            "09/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/09-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/03/2026 21 Horas" },
-            "10/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/10-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/03/2026 21 Horas" },
-            "11/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/11-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/03/2026 21 Horas" },
-            "12/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/12-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/03/2026 21 Horas" },
-            "13/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/13-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/03/2026 21 Horas" },
-            "14/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/12-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/03/2026 Reprise" },
-            "15/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/13-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/03/2026 Reprise" },
-            "16/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/16-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/03/2026 21 Horas" },
-            "17/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/17-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/03/2026 21 Horas" },
-            "18/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/18-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/03/2026 21 Horas" },
-            "19/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/19-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/03/2026 21 Horas" },
-            "20/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/20-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/03/2026 21 Horas" },
-            "21/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/19-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/03/2026 Reprise" },
-            "22/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/20-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/03/2026 Reprise" },
-            "23/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/23-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/03/2026 21 Horas" },
-            "24/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/24-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/03/2026 21 Horas" },
-            "25/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/25-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/03/2026 21 Horas" },
-            "26/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/26-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/03/2026 21 Horas" },
-            "27/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/27-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/03/2026 21 Horas" },
-            "28/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/26-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/03/2026 Reprise" },
-            "29/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/27-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/03/2026 Reprise" },
-            "30/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/30-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/03/2026 21 Horas" },
-            "31/03": { url: "https://audios.ebc.com.br/radiogov/2026/03/31-03-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 31/03/2026 21 Horas" },
-                // --- ABRIL ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 21 Horas" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 21 Horas" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 Reprise" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 Reprise" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 21 Horas" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 21 Horas" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 Reprise" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 Reprise" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 21 Horas" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 21 Horas" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 Reprise" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 Reprise" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 21 Horas" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 21 Horas" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 Reprise" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 Reprise" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 21 Horas" },
-                // --- MAIO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 01/05/2026 21 Horas" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 Reprise" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 01/05/2026 Reprise" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/05/2026 21 Horas" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/05/2026 21 Horas" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/05/2026 21 Horas" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/05/2026 21 Horas" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/05/2026 21 Horas" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/05/2026 Reprise" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/05/2026 Reprise" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/05/2026 21 Horas" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/05/2026 21 Horas" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/05/2026 21 Horas" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/05/2026 21 Horas" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/05/2026 21 Horas" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/05/2026 Reprise" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/05/2026 Reprise" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/05/2026 21 Horas" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/05/2026 21 Horas" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/05/2026 21 Horas" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/05/2026 21 Horas" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/05/2026 21 Horas" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/05/2026 Reprise" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/05/2026 Reprise" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/05/2026 21 Horas" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/05/2026 21 Horas" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/05/2026 21 Horas" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/05/2026 21 Horas" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/05/2026 21 Horas" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/05/2026 Reprise" },
-            "31/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/31-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 31/05/2026 Reprise" },
-                // --- JUNHO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 21 Horas" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 21 Horas" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/04/2026 21 Horas" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 Reprise" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 Reprise" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 21 Horas" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 21 Horas" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/04/2026 21 Horas" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 Reprise" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 Reprise" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 21 Horas" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 21 Horas" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/04/2026 21 Horas" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 Reprise" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 Reprise" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 21 Horas" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 21 Horas" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/04/2026 21 Horas" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 Reprise" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 Reprise" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 21 Horas" },
-                // --- JULHO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 21 Horas" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 21 Horas" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/04/2026 Reprise" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 Reprise" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 21 Horas" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 21 Horas" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/04/2026 Reprise" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 Reprise" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 21 Horas" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 21 Horas" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/04/2026 Reprise" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 Reprise" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 21 Horas" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 21 Horas" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/04/2026 Reprise" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 Reprise" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 21 Horas" },
-            "31/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/31-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 31/04/2026 21 Horas" },
-                // --- AGOSTO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 Reprise" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 Reprise" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 21 Horas" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/04/2026 21 Horas" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 Reprise" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 Reprise" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 21 Horas" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/04/2026 21 Horas" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 Reprise" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 Reprise" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 21 Horas" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/04/2026 21 Horas" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 Reprise" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 Reprise" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 21 Horas" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/04/2026 21 Horas" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 Reprise" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 Reprise" },
-            "31/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/31-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 31/04/2026 21 Horas" },
-                // --- SETEMBRO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 21 Horas" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 21 Horas" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/04/2026 21 Horas" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 Reprise" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 Reprise" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 21 Horas" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 21 Horas" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/04/2026 21 Horas" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 Reprise" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 Reprise" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 21 Horas" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 21 Horas" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/04/2026 21 Horas" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 Reprise" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 Reprise" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 21 Horas" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 21 Horas" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/04/2026 21 Horas" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 Reprise" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 Reprise" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 21 Horas" },
-                // --- OUTUBRO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 21 Horas" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 Reprise" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/04/2026 Reprise" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 21 Horas" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 Reprise" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/04/2026 Reprise" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 21 Horas" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 Reprise" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/04/2026 Reprise" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 21 Horas" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 Reprise" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/04/2026 Reprise" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 21 Horas" },
-            "31/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/31-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 31/04/2026 Reprise" },
-                // --- NOVEMBRO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 Reprise" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 21 Horas" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 21 Horas" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/04/2026 21 Horas" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 Reprise" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 Reprise" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 21 Horas" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 21 Horas" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/04/2026 21 Horas" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 Reprise" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 Reprise" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 21 Horas" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 21 Horas" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/04/2026 21 Horas" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 Reprise" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 Reprise" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 21 Horas" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 21 Horas" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/04/2026 21 Horas" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 Reprise" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 Reprise" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 21 Horas" },
-                // --- DEZEMBRO ---
-            "01/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/01-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "02/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/02-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 02/04/2026 21 Horas" },
-            "03/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/03-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 03/04/2026 21 Horas" },
-            "04/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/04-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 04/04/2026 21 Horas" },
-            "05/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/05-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 Reprise" },
-            "06/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/06-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 Reprise" },
-            "07/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/07-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 05/04/2026 21 Horas" },
-            "08/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/08-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 06/04/2026 21 Horas" },
-            "09/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/09-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 09/04/2026 21 Horas" },
-            "10/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/10-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 10/04/2026 21 Horas" },
-            "11/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/11-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 11/04/2026 21 Horas" },
-            "12/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/12-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 Reprise" },
-            "13/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/13-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 Reprise" },
-            "14/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/14-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 12/04/2026 21 Horas" },
-            "15/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/15-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 13/04/2026 21 Horas" },
-            "16/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/16-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 16/04/2026 21 Horas" },
-            "17/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/17-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 17/04/2026 21 Horas" },
-            "18/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/18-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 18/04/2026 21 Horas" },
-            "19/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/19-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 Reprise" },
-            "20/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/20-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 Reprise" },
-            "21/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/21-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 19/04/2026 21 Horas" },
-            "22/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/22-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 20/04/2026 21 Horas" },
-            "23/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/23-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 23/04/2026 21 Horas" },
-            "24/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/24-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 24/04/2026 21 Horas" },
-            "25/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/25-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 25/04/2026 21 Horas" },
-            "26/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/26-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 Reprise" },
-            "27/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/27-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 Reprise" },
-            "28/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/28-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 26/04/2026 21 Horas" },
-            "29/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/29-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 27/04/2026 21 Horas" },
-            "30/04": { url: "https://audios.ebc.com.br/radiogov/2026/04/30-04-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 30/04/2026 21 Horas" },
-            "31/12": { url: "https://audios.ebc.com.br/radiogov/2026/12/31-12-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 31/12/2026 21 Horas" }
-        };
-
-        // 3. Playlist Fixa (O que fica no final da lista)
-        let tracks = [
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/14-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 14/01/2026 Reprise" },
-            { url: "https://audios.ebc.com.br/radiogov/2026/01/15-01-26-a-voz-do-brasil.mp3", nome: "A Voz do Brasil 15/01/2026 Reprise" }
-        ];
-
-        // 4. Lógica de Redirecionamento de 2 retornos (Hoje e Ontem)
-        // Adicionamos primeiro o de ontem e depois o de hoje no topo
-        if (linksDiarios[dataOntem]) {
-            tracks.unshift(linksDiarios[dataOntem]);
-        }
-        if (linksDiarios[dataHoje]) {
-            tracks.unshift(linksDiarios[dataHoje]); // O de hoje fica em primeiro
-        }
-
-        let indiceAtual = 0;
-
-        // 5. Renderização e Funções do App
-        const listaDiv = document.getElementById('lista');
-        function renderizarLista() {
-            listaDiv.innerHTML = '';
-            tracks.forEach((track, i) => {
-                const div = document.createElement('div');
-                div.className = i === indiceAtual ? 'item active' : 'item';
-                div.id = 'track-' + i;
-                div.onclick = () => selecionar(i);
-                div.innerHTML = `<span>${track.nome}</span>`;
-                listaDiv.appendChild(div);
-            });
-        }
-
-        function selecionar(index) {
-            indiceAtual = index;
-            renderizarLista();
-            enviarParaOApp();
-        }
-
-        function enviarParaOApp() {
-            const musica = tracks[indiceAtual];
-            if (window.parent) {
-                window.parent.postMessage({
-                    tipo: 'tocar',
-                    url: musica.url,
-                    nome: musica.nome
-                }, '*');
-            }
-        }
-
+        // Recebe o comando do Iframe para tocar a música
         window.addEventListener('message', function(event) {
-            if (event.data === 'next') {
-                selecionar((indiceAtual + 1) % tracks.length);
-            } else if (event.data === 'prev') {
-                selecionar((indiceAtual - 1 + tracks.length) % tracks.length);
+            if (event.data.tipo === 'tocar') {
+                audio.src = event.data.url;
+                audio.play();
+                statusDiv.innerText = "Tocando: " + event.data.nome;
+                playBtn.innerText = "[ PAUSE ]";
             }
         });
 
-        renderizarLista();
-        enviarParaOApp();
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+        function abrirPlayer(cat) {
+            document.getElementById('home').classList.remove('ativa');
+            document.getElementById('player-view').classList.add('ativa');
+            document.getElementById('titulo-cat').innerText = cat;
+            // Carrega o arquivo da lista sem sair do App
+            iframe.src = cat + ".html";
         }
+
+        function irParaHome() {
+            audio.pause();
+            audio.src = "";
+            statusDiv.innerText = "";
+            document.getElementById('player-view').classList.remove('ativa');
+            document.getElementById('home').classList.add('ativa');
+        }
+
+        function togglePlay() {
+            if (audio.paused) { audio.play(); playBtn.innerText = "[ PAUSE ]"; }
+            else { audio.pause(); playBtn.innerText = "[ PLAY ]"; }
+        }
+
+        // Comandos enviados para o Iframe decidir qual música é a próxima
+        function next() { iframe.contentWindow.postMessage('next', '*'); }
+        function prev() { iframe.contentWindow.postMessage('prev', '*'); }
+        
+        // Passagem automática
+        audio.onended = next;
     </script>
-<script>
+    <script>
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log("Proteção Offline Ativada!"));
     }
 </script>
 </body>
