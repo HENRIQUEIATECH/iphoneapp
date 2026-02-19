@@ -69,6 +69,29 @@
             letter-spacing: 6px; 
             text-transform: uppercase;
         }
+        body, html { 
+    margin: 0; 
+    padding: 0; 
+    width: 100%; 
+    min-height: 100vh; /* Mudança aqui: de height para min-height */
+    overflow-x: hidden; /* Trava apenas a lateral */
+    background-color: #000;
+}
+
+.container {
+    background-color: #000; 
+    color: #fff; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    min-height: 100vh; /* Mudança aqui: de height para min-height */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center; 
+    padding: 60px 20px; /* Mais espaço para o respiro */
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+    border-top: 10px solid #f1c40f;
+}
     </style>
 </head>
 <body>
