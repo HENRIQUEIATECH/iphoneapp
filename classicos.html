@@ -2,159 +2,123 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBA | Soberania Digital</title>
     <style>
-        body { background: transparent; font-family: -apple-system, sans-serif; color: #084424; margin: 0; padding: 0; }
-        #lista { display: flex; flex-direction: column; width: 100%; }
-        
-        .item { 
-            padding: 16px 15px; 
-            border-bottom: 1px solid rgba(8, 68, 36, 0.08); 
-            cursor: pointer; 
-            font-size: 16px; 
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
+        .container {
+            background-color: #000; 
+            color: #fff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; 
+            padding: 40px; 
+            border-top: 10px solid #f1c40f;
         }
+        .logo { width: 120px; margin-bottom: 30px; filter: grayscale(100%); opacity: 0.8; }
+        .title { 
+            font-size: 26px; 
+            letter-spacing: 3px; 
+            color: #f1c40f; 
+            margin-bottom: 25px; 
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+        .quote-box { 
+            max-width: 650px; 
+            border-left: 4px solid #f1c40f; 
+            padding-left: 25px; 
+            margin-bottom: 35px;
+            background: rgba(241, 196, 15, 0.05);
+            padding: 20px 25px;
+        }
+        .quote-text { 
+            font-size: 19px; 
+            line-height: 1.7; 
+            text-align: left; 
+            font-style: italic;
+            color: #fdfbf7;
+            margin: 0;
+        }
+        .concept { 
+            font-size: 15px; 
+            margin-bottom: 45px; 
+            color: #aaa; 
+            letter-spacing: 1px;
+        }
+        .btn-free { 
+            background-color: #f1c40f; 
+            color: #000; 
+            padding: 18px 35px; 
+            text-decoration: none; 
+            font-weight: bold; 
+            border-radius: 2px; 
+            text-transform: uppercase;
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+        .btn-free:hover { background-color: #fff; transform: scale(1.02); }
+        .footer-note { 
+            margin-top: 70px; 
+            font-size: 10px; 
+            opacity: 0.4; 
+            letter-spacing: 6px; 
+            text-transform: uppercase;
+        }
+        body, html { 
+    margin: 0; 
+    padding: 0; 
+    width: 100%; 
+    min-height: 100vh; /* Mudança aqui: de height para min-height */
+    overflow-x: hidden; /* Trava apenas a lateral */
+    background-color: #000;
+}
 
-        /* Estilo para a música que está tocando */
-        .item.active { 
-            background-color: rgba(8, 68, 36, 0.05); 
-            font-weight: 700;
-            color: #084424;
-            border-left: 4px solid #084424;
-        }
-
-        .item::after { content: "▶"; font-size: 10px; opacity: 0.3; margin-left: 10px; }
-        .item.active::after { content: "🔊"; opacity: 1; font-size: 12px; }
-        
-        .item:active { background-color: rgba(8, 68, 36, 0.1); }
-        
-        .item span { 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis; 
-            flex: 1;
-        }
+.container {
+    background-color: #000; 
+    color: #fff; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    min-height: 100vh; /* Mudança aqui: de height para min-height */
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    text-align: center; 
+    padding: 60px 20px; /* Mais espaço para o respiro */
+    box-sizing: border-box; /* Garante que o padding não quebre o layout */
+    border-top: 10px solid #f1c40f;
+}
     </style>
 </head>
-<body> 
-    <div id="lista">
-        </div>
+<body>
 
-    <script>
-        const tracks = [
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/01%20-%20Francisco%20Alves%20-%20Boa%20Noite%2C%20Amor.mp3", nome: "Francisco Alves - Boa Noite, Amor" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/04%20-%20Orlando%20Silva%20-%20Errei%2C%20Erramos.mp3", nome: "Orlando Silva - Errei, Erramos" },
-            { url: "https://dn710206.ca.archive.org/0/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/02%20-%20Orlando%20Silva%20-%20A%20Ultima%20Estrofe.mp3", nome: "Orlando Silva - A Ultima Estrofe" },
-            { url: "https://dn710206.ca.archive.org/0/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/01%20-%20Orlando%20Silva%20-%20Carinhoso.mp3", nome: "Orlando Silva - Carinhoso" },
-            { url: "https://ia600501.us.archive.org/33/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/03%20-%20Orlando%20Silva%20-%20Ceu%20Moreno.mp3", nome: "Orlando Silva - Ceu Moreno" },
-            { url: "https://dn710206.ca.archive.org/0/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/04%20-%20Orlando%20Silva%20-%20Apoteose%20Do%20Amor.mp3", nome: "Orlando Silva - Apoteose Do Amor" },
-            { url: "https://dn710206.ca.archive.org/0/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/06%20-%20Orlando%20Silva%20-%20Chora%20Cavaquinho.mp3", nome: "Orlando Silva - Chora Cavaquinho" },
-            { url: "https://dn710206.ca.archive.org/0/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/07%20-%20Orlando%20Silva%20-%20Pela%20Primeira%20Vez.mp3", nome: "Orlando Silva - Pela Primeira Vez" },
-            { url: "https://dn710206.ca.archive.org/0/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/08%20-%20Orlando%20Silva%20-%20Tristeza.mp3", nome: "Orlando Silva - Tristeza" },
-            { url: "https://ia600501.us.archive.org/33/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/09%20-%20Orlando%20Silva%20-%20Historia%20Joanina.mp3", nome: "Orlando Silva - Historia Joanina" },
-            { url: "https://dn710206.ca.archive.org/0/items/orlando-silva-o-cantor-das-multidoes-gravacoes-originais-1935-1942-1995-3-cd-320-kbps/10%20-%20Orlando%20Silva%20-%20Magoas%20De%20Caboclo.mp3", nome: "Orlando Silva - Magoas De Caboclo" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/07%20-%20Vicente%20Celestino%20-%20Linda%20Flor%20%28Ai%2C%20Y%C3%B4%20Y%C3%B4%29.mp3", nome: "Linda Flor (Vicente Celestino - Ai, Yô Yô)" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/02%20-%20M%C3%A1rio%20Reis%20-%20Jura.mp3", nome: "Mário Reis - Jura" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/06%20-%20Carlos%20Galhardo%20-%20Fascina%C3%A7%C3%A3o.mp3", nome: "Carlos Galhardo - Fascinação" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/03%20-%20Jorge%20Goulart%20-%20Marcha%20Da%20Quarta-Feira%20De%20Cinzas.mp3", nome: "Jorge Goulart - Marcha Da Quarta-Feira De Cinzas" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/05%20-%20Cauby%20Peixoto%20-%20Concei%C3%A7%C3%A3o.mp3", nome: "Cauby Peixoto - Conceição" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/08%20-%20Tito%20Madi%20-%20Chove%20L%C3%A1%20Fora.mp3", nome: "Tito Madi - Chove Lá Fora" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/09%20-%20Cyro%20Monteiro%20-%20Se%20Acaso%20Voc%C3%AA%20Chegasse.mp3", nome: "Cyro Monteiro - Se Acaso Você Chegasse" },
-            { url: "https://ia800800.us.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/10%20-%20S%C3%ADlvio%20Caldas%20-%20Ch%C3%A3o%20De%20Estrelas.mp3", nome: "Sílvio Caldas - Chão De Estrelas" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/11%20-%20Jackson%20Do%20Pandeiro%20-%20Sebastiana.mp3", nome: "Jackson Do Pandeiro - Sebastiana" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/12%20-%20Luiz%20Gonzaga%20-%20Menino%20De%20Bra%C3%A7an%C3%A3.mp3", nome: "Luiz Gonzaga - Menino De Braçanã" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/13%20-%20Germano%20Mathias%20-%20Maria%20Espingardina.mp3", nome: "Germano Mathias - Maria Espingardina" },
-            { url: "https://dn720300.ca.archive.org/0/items/os-reis-da-voz-2013/Os%20Reis%20Da%20Voz%20%282013%29/14%20-%20Moreira%20Da%20Silva%20-%20Judia%20Rara.mp3", nome: "Moreira Da Silva - Judia Rara" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/01.%20Nelson%20Gon%C3%A7alves%20-%20A%20Volta%20do%20Bo%C3%AAmio.mp3", nome: "Nelson Gonçalves - A Volta do Boêmio" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/02.%20Nelson%20Gon%C3%A7alves%20-%20Quem%20H%C3%A1%20de%20Dizer.mp3", nome: "Nelson Gonçalves - Quem Há de Dizer" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/03.%20Nelson%20Gon%C3%A7alves%20-%20Meu%20V%C3%ADcio%20%C3%A9%20Voc%C3%AA.mp3", nome: "Nelson Gonçalves - Meu Vício é Você" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/04.%20Nelson%20Gon%C3%A7alves%20-%20Folhas%20Mortas.mp3", nome: "Nelson Gonçalves - Folhas Mortas" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/05.%20Nelson%20Gon%C3%A7alves%20-%20Um%20Juramento%20Falso.mp3", nome: "Nelson Gonçalves - Um Juramento Falso" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/06.%20Nelson%20Gon%C3%A7alves%20-%20Nem%20as%20Paredes%20Confesso.mp3", nome: "Nelson Gonçalves - Nem as Paredes Confesso" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/07.%20Nelson%20Gon%C3%A7alves%20-%20Tr%C3%AAs%20Apitos.mp3", nome: "Nelson Gonçalves - Três Apitos" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/08.%20Nelson%20Gon%C3%A7alves%20-%20Ela%20Me%20Beijou.mp3", nome: "Nelson Gonçalves - Ela Me Beijou" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/09.%20Nelson%20Gon%C3%A7alves%20-%20Dolores%20Sierra.mp3", nome: "Nelson Gonçalves - Dolores Sierra" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/10.%20Nelson%20Gon%C3%A7alves%20-%20Cabelos%20Brancos.mp3", nome: "Nelson Gonçalves - Cabelos Brancos" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/11.%20Nelson%20Gon%C3%A7alves%20-%20Deixe%20Que%20Ela%20Se%20V%C3%A1.mp3", nome: "Nelson Gonçalves - Deixe Que Ela Se Vá" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/12.%20Nelson%20Gon%C3%A7alves%20-%20Mariposa.mp3", nome: "Nelson Gonçalves - Mariposa" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/13.%20Nelson%20Gon%C3%A7alves%20-%20Ch%C3%A3o%20de%20Estrelas.mp3", nome: "Nelson Gonçalves - Chão de Estrelas" },
-            { url: "https://ia601502.us.archive.org/18/items/50anosdeboemiavol1/14.%20Nelson%20Gon%C3%A7alves%20-%20Pensando%20em%20Ti.mp3", nome: "Nelson Gonçalves - Pensando em Ti" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/15.%20Nelson%20Gon%C3%A7alves%20-%20Naquela%20Mesa.mp3", nome: "Nelson Gonçalves - Naquela Mesa" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/16.%20Nelson%20Gon%C3%A7alves%20-%20Aquela%20Mulher.mp3", nome: "Nelson Gonçalves - Aquela Mulher" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/17.%20Nelson%20Gon%C3%A7alves%20-%20Como%20Vai%20Voc%C3%AA.mp3", nome: "Nelson Gonçalves - Como Vai Você" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/18.%20Nelson%20Gon%C3%A7alves%20-%20Revolta.mp3", nome: "Nelson Gonçalves - Revolta" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/19.%20Nelson%20Gon%C3%A7alves%20-%20Deusa%20do%20Asfalto.mp3", nome: "Nelson Gonçalves - Deusa do Asfalto" },
-            { url: "https://dn720903.ca.archive.org/0/items/50anosdeboemiavol1/20.%20Nelson%20Gon%C3%A7alves%20-%20Carlos%20Gardel.mp3", nome: "Nelson Gonçalves - Carlos Gardel" },
-            { url: "https://dn720302.ca.archive.org/0/items/a_historia_viva_da_musica_gaucha/16%2C%20Um%20tributo%20%C3%A0%20nossa%20gaita.mp3", nome: "Chiquito e Bordoneio - Um tributo à nossa gaita" },
-            { url: "https://dn720302.ca.archive.org/0/items/a_historia_viva_da_musica_gaucha/15%2C%20Pe%C3%A3o%20farrapo.mp3", nome: "Chiquito e Bordoneio - Peão farrapo" },
-            { url: "https://dn720302.ca.archive.org/0/items/a_historia_viva_da_musica_gaucha/04%2C%20Ga%C3%BAcho%20Erechim.mp3", nome: "Chiquito e Bordoneio - Gaúcho Erechim" }
-        ];
+<div class="container">
+    <img src="logo.png" alt="RBA Logo" class="logo">
 
-        let indiceAtual = 0;
+    <h1 class="title">Soberania Digital & Ética Global</h1>
 
-        // Renderiza a lista automaticamente
-        const listaDiv = document.getElementById('lista');
-        tracks.forEach((track, i) => {
-            const div = document.createElement('div');
-            div.className = 'item';
-            div.id = 'track-' + i;
-            div.onclick = () => selecionar(i);
-            div.innerHTML = `<span>${track.nome}</span>`;
-            listaDiv.appendChild(div);
-        });
+    <div class="quote-box">
+        <p class="quote-text">
+            "Por nossa decisão estratégica e por nossa ideologia de alinhamento absoluto aos critérios de <strong>ESG</strong> e às diretrizes da <strong>ONU</strong> para uma Web Inclusiva, a Rádio Brasil Artes encerra suas atividades neste ecossistema fechado."
+        </p>
+    </div>
 
-        function selecionar(index) {
-            indiceAtual = index;
-            atualizarInterface();
-            enviarParaOApp();
-        }
+    <p class="concept">
+        Não aceitamos bloqueios à cultura. Nosso conceito maior: <strong>LIBERDADE</strong>.
+    </p>
 
-        function atualizarInterface() {
-            // Remove a classe active de todos
-            document.querySelectorAll('.item').forEach(el => el.classList.remove('active'));
-            // Adiciona na música atual
-            const elementoAtivo = document.getElementById('track-' + indiceAtual);
-            if (elementoAtivo) {
-                elementoAtivo.classList.add('active');
-                // Faz a lista rolar automaticamente para a música se ela estiver fora da visão
-                elementoAtivo.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        }
+    <a href="https://iartium.com/rba/" class="btn-free">
+        Acesse via APK Livre (Android)
+    </a>
 
-        function enviarParaOApp() {
-            const musica = tracks[indiceAtual];
-            if (window.parent) {
-                window.parent.postMessage({
-                    tipo: 'tocar',
-                    url: musica.url,
-                    nome: musica.nome
-                }, '*');
-            }
-        }
+    <div class="footer-note">
+        IARTIUM SOLUTIONS | SOBERANIA 2026
+    </div>
+</div>
 
-        // Responde aos botões do App Principal
-        window.addEventListener('message', function(event) {
-            if (event.data === 'next') {
-                indiceAtual = (indiceAtual + 1) % tracks.length;
-                selecionar(indiceAtual);
-            } else if (event.data === 'prev') {
-                indiceAtual = (indiceAtual - 1 + tracks.length) % tracks.length;
-                selecionar(indiceAtual);
-            }
-        });
-
-        // Inicia a primeira música visualmente
-        atualizarInterface();
-    </script>
-        <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js');
-    }
-</script>
 </body>
 </html>
