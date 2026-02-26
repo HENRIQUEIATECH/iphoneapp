@@ -3,39 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RBA - Portal de Instalação</title>
+    <title>IARTIUM - Soberania Digital</title>
     <style>
-        body { background: #084424; color: #fcd404; font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
-        .aviso { padding: 20px; max-width: 300px; }
-        .logo { width: 100px; margin-bottom: 20px; }
+        body { 
+            background: #084424; 
+            color: #fcd404; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            text-align: center; 
+        }
+        .container { 
+            padding: 30px; 
+            max-width: 500px; 
+            border: 1px solid #fcd404;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .logo { width: 120px; margin-bottom: 20px; }
+        h1 { font-size: 1.5rem; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        p { color: white; line-height: 1.6; font-size: 1.1rem; }
+        .highlight { color: #fcd404; font-weight: bold; }
+        .btn-download { 
+            display: inline-block; 
+            margin-top: 20px; 
+            padding: 15px 30px; 
+            background: #fcd404; 
+            color: #084424; 
+            text-decoration: none; 
+            font-weight: bold; 
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+        .manifesto-short {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            border-top: 1px solid #fcd404;
+            padding-top: 20px;
+            font-style: italic;
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
 
-    <div id="msg-desktop" style="display:none;" class="aviso">
-        <img src="logo.png" class="logo" alt="RBA">
-        <h2>Acesso via Celular</h2>
-        <p style="color: white;">Este aplicativo é exclusivo para dispositivos móveis.</p>
-        <p>Acesse pelo seu <strong>iPhone</strong> ou <strong>Android</strong> para ouvir a Rádio Brasil Artes.</p>
+    <div class="container">
+        <img src="logo.png" class="logo" alt="IARTIUM">
+        
+        <div id="status-area">
+            <h1>Soberania Técnica</h1>
+            <p>Com certeza, aqui você pode baixar seu app gratuitamente com todas as <span class="highlight">boas e perfeitas performances</span> para Android, desenvolvido integralmente em <span class="highlight">Java Nativo</span>.</p>
+            
+            <div id="android-only" style="display:none;">
+                <a href="https://iartium.com/RBA.apk" class="btn-download">Baixar APK Nativo</a>
+            </div>
+
+            <div class="manifesto-short">
+                <p>"Deixamos de programar para iOS. A política deles não se encaixa em nossa ideologia. Acreditamos que o programador deve ter a liberdade absoluta de colocar seus apps onde desejar, sem bloqueios ou pedágios de ecossistemas fechados."</p>
+            </div>
+        </div>
     </div>
 
     <script>
         (function() {
             const userAgent = navigator.userAgent;
-            const isIphone = /iPhone|iPad|iPod/i.test(userAgent);
             const isAndroid = /Android/i.test(userAgent);
-            
-            // 1. Se for iPhone, manda para a página do App para ver o tutorial
-            if (isIphone) {
-                window.location.href = "https://iartium.com/iphoneapp/indexapp.html"; 
-            } 
-            // 2. Se for Android, inicia o download do APK diretamente
-            else if (isAndroid) {
-                window.location.href = "https://iartium.com/RBA.apk";
-            } 
-            // 3. Se for computador, mostra a mensagem de bloqueio
-            else {
-                document.getElementById('msg-desktop').style.display = 'block';
+            const isIphone = /iPhone|iPad|iPod/i.test(userAgent);
+           
+            if (isAndroid) {
+                // Se for Android, exibe o botão e pode até disparar o download automático
+                document.getElementById('android-only').style.display = 'block';
+                // window.location.href = "https://iartium.com/RBA.apk"; // Opcional: download automático
+            } else if (isIphone) {
+                // Se for iPhone, ele verá o manifesto e saberá que não há suporte por decisão ideológica
+                document.querySelector('h1').innerText = "Acesso Restrito";
+                document.querySelector('.highlight').innerText = "Liberdade de Escolha";
             }
         })();
     </script>
